@@ -1,5 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "Running lint-staged..."
-bunx lint-staged  # Use bunx to run lint-staged
+bunx lint-staged 
