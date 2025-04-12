@@ -1,10 +1,11 @@
 {
 	"name": "discord-esport-manager-ts",
-	"module": "src/index.ts",
 	"type": "module",
+	"module": "src/index.ts",
 	"scripts": {
 		"check": "biome check --apply",
 		"check:ci": "biome ci .",
+		"build": "bun build src/index.ts --outdir ./dist --target bun",
 		"prepare": "husky",
 		"review:diff": "mkdir -p .temp && git diff main...HEAD > .temp/review.diff"
 	},

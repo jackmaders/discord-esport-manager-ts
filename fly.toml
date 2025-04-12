@@ -1,0 +1,18 @@
+app = 'discord-esport-manager-ts'
+primary_region = 'lhr'
+
+[processes]
+  app = "bun dist/index.js"
+
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[vm.machine_options]
+  auto_destroy = false
+
+[scaling]
+  min = 1
+  max = 1
