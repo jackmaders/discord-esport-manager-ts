@@ -1,11 +1,20 @@
 {
-  "name": "discord-esport-manager-ts",
-  "module": "src/index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "discord-esport-manager-ts",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"check": "biome check --apply",
+		"check:ci": "biome ci .",
+		"prepare": "husky",
+		"review:diff": "mkdir -p .temp && git diff main...HEAD > .temp/review.diff"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "latest",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.1"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
 }
