@@ -1,0 +1,22 @@
+name: Verify Build with Bun
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚡ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+
+      - name: 🛠️ Check Build Success
+        run: bun run build
