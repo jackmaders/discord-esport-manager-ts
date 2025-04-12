@@ -3,11 +3,15 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"check": "biome check --write"
+		"check": "biome check",
+		"check:ci": "biome ci .",
+		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.1"
 	},
 	"peerDependencies": {
 		"typescript": "^5.0.0"
