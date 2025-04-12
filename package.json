@@ -5,7 +5,8 @@
 	"scripts": {
 		"check": "biome check",
 		"check:ci": "biome ci .",
-		"prepare": "husky"
+		"prepare": "husky",
+		"review:diff": "mkdir -p .temp && git diff main...HEAD > .temp/review.diff"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
