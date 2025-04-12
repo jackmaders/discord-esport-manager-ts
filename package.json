@@ -1,7 +1,8 @@
 {
 	"name": "discord-esport-manager-ts",
-	"module": "src/index.ts",
 	"type": "module",
+	"module": "src/index.ts",
+	"main": "src/index.ts",
 	"scripts": {
 		"check": "biome check --apply",
 		"check:ci": "biome ci .",
@@ -10,6 +11,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@flydotio/dockerfile": "^0.7.10",
 		"@types/bun": "latest",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.1"
