@@ -3,12 +3,13 @@
 	"type": "module",
 	"module": "src/index.ts",
 	"scripts": {
-		"check": "biome check --apply",
+		"check": "biome check --write",
 		"check:ci": "biome ci .",
 		"build": "bun build src/index.ts --outdir ./dist --target bun",
 		"prepare": "husky",
 		"test": "bun test",
 		"test:watch": "bun test --watch",
+		"test:ci": "bun test --coverage",
 		"review:diff": "mkdir -p .temp && git diff main...HEAD > .temp/review.diff"
 	},
 	"devDependencies": {
