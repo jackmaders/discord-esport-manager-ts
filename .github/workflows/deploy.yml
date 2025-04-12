@@ -13,9 +13,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🎈 Setup Fly.io
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@v1.4
+
+      - name: 🏷️ Get Bun Version
+        id: bun_version
+        run: echo "version=$(cat .bun-version)" >> $GITHUB_OUTPUT
 
       - name: 🚀 Deploy
-        run: flyctl deploy --remote-only
+        run: flyctl deploy --remote-only --build-arg BUN_VERSION=${{ steps.bun_version.outputs.version }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

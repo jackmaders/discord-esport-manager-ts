@@ -1,44 +1,35 @@
 # syntax = docker/dockerfile:1
 
-# Adjust BUN_VERSION as desired
+# Define Bun version arg. This will be overridden by --build-arg in CI/CD
 ARG BUN_VERSION=1.2.2
 FROM oven/bun:${BUN_VERSION}-slim AS base
 
-LABEL fly_launch_runtime="Bun"
+# ---- Build Stage ----
+FROM base AS build
+WORKDIR /app
 
-# Bun app lives here
+# Install all dependencies (including devDependencies needed for build)
+COPY package.json bun.lock ./
+# Use --ci for faster installs based on lockfile
+RUN bun install --ci
+
+# Copy the rest of the application code
+# Ensure .dockerignore excludes unnecessary files (.git, .vscode, etc.)
+COPY . .
+
+# Build the application, bundling dependencies into ./dist
+RUN bun run build
+
+# ---- Final Stage ----
+FROM base
 WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="production"
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
+# Copy only the bundled code from the build stage
+COPY --from=build /app/dist /app/dist
 
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential pkg-config python-is-python3
-
-# Install node modules
-COPY bun.lock package.json ./
-RUN bun install
-
-# Copy application code
-COPY . .
-
-# Build application
-RUN bun run build
-
-# Remove development dependencies
-RUN rm -rf node_modules && \
-    bun install --ci
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "bun", "run", "dist/index.js" ]
+# Run the bundled application
+# Bun can directly execute the JS file
+CMD [ "bun", "dist/index.js" ]
