@@ -7,6 +7,8 @@
 		"check:ci": "biome ci .",
 		"build": "bun build src/index.ts --outdir ./dist --target bun",
 		"prepare": "husky",
+		"test": "bun test",
+		"test:watch": "bun test --watch",
 		"review:diff": "mkdir -p .temp && git diff main...HEAD > .temp/review.diff"
 	},
 	"devDependencies": {
