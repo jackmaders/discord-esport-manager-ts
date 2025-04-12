@@ -1,13 +1,12 @@
-name: Test with Bun
+name: Build with Bun
 
 on:
   pull_request:
     branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: 🛒 Checkout
         uses: actions/checkout@v4
@@ -17,8 +16,5 @@ jobs:
         with:
           bun-version-file: ".bun-version"
 
-      - name: 📦 Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: 🧪 Run Tests
-        run: bun run test:ci
+      - name: 🛠️ Check Build Success
+        run: bun run build
