@@ -14,6 +14,7 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		throw new Error("Missing required environment variable: DISCORD_CLIENT_ID");
 
 	try {
+		// TODO: Implement a logger library
 		console.info(LogMessages.MAIN_INFO_BOT_START);
 		client.on(Events.Error, console.error);
 		client.on(Events.Warn, console.warn);

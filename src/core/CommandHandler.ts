@@ -22,6 +22,7 @@ export default class CommandHandler {
 
 		this.commands.clear();
 
+		// TODO: Refactor this to load commands dynamically
 		this.commands.set(pingCommand.name, {
 			data: pingCommand,
 			execute: handlePing,
@@ -51,11 +52,6 @@ export default class CommandHandler {
 
 	async handleInteraction(interaction: Interaction) {
 		if (!interaction.isChatInputCommand()) return;
-
-		console.info(
-			LogMessages.CH_INFO_HANDLE_INTERACTION,
-			interaction.commandName,
-		);
 
 		const command = this.commands.get(interaction.commandName);
 
