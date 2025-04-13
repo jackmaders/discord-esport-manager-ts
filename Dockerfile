@@ -17,6 +17,9 @@ RUN bun install --ci
 # Ensure .dockerignore excludes unnecessary files (.git, .vscode, etc.)
 COPY . .
 
+# Set production environment
+ENV NODE_ENV="production"
+
 # Build the application, bundling dependencies into ./dist
 RUN bun run build
 
