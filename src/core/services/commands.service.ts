@@ -61,64 +61,76 @@ export default class CommandsService {
 		await Promise.all(promises);
 
 		logger.debug(LogMessages.DEBUG_LOAD_MODULES_END);
+
+		if (this.commands.size === 0)
+			logger.warn(LogMessages.WARN_NO_COMMANDS_RECOGNISED);
 	}
 
 	/**
 	 * Processes a single module directory to find and load commands.
 	 */
 	private async processModule(moduleDirent: Dirent) {
-		logger.debug(LogMessages.DEBUG_LOAD_MODULE_START, moduleDirent.name);
+		try {
+			logger.debug(LogMessages.DEBUG_LOAD_MODULE_START, moduleDirent.name);
 
-		const moduleName = moduleDirent.name;
-		const commandsPath = path.join(this.modulesPath, moduleName, "commands");
-		const stats = await stat(commandsPath);
-		const commandsDirExists = stats.isDirectory();
+			const moduleName = moduleDirent.name;
+			const commandsPath = path.join(this.modulesPath, moduleName, "commands");
+			const stats = await stat(commandsPath);
+			const commandsDirExists = stats.isDirectory();
 
-		if (!commandsDirExists) {
-			logger.debug(LogMessages.DEBUG_NO_COMMANDS_FOUND, moduleDirent.name);
-			return;
-		}
-
-		const commandFiles = await readdir(commandsPath);
-		for (const file of commandFiles) {
-			if (!(file.endsWith(".command.ts") || file.endsWith(".command.js"))) {
-				logger.warn(LogMessages.WARN_COMMAND_FILE_NOT_RECOGNISED, file);
-				continue;
+			if (!commandsDirExists) {
+				logger.debug(LogMessages.DEBUG_NO_COMMANDS_FOUND, moduleDirent.name);
+				return;
 			}
 
-			const filePath = path.join(commandsPath, file);
-			await this.loadCommandFile(filePath);
-		}
+			const commandFiles = await readdir(commandsPath);
+			for (const file of commandFiles) {
+				if (!(file.endsWith(".command.ts") || file.endsWith(".command.js"))) {
+					logger.warn(LogMessages.WARN_COMMAND_FILE_NOT_RECOGNISED, file);
+					continue;
+				}
 
-		logger.debug(LogMessages.DEBUG_LOAD_MODULE_END, moduleDirent.name);
+				const filePath = path.join(commandsPath, file);
+				await this.loadCommandFile(filePath);
+			}
+
+			logger.debug(LogMessages.DEBUG_LOAD_MODULE_END, moduleDirent.name);
+		} catch (error) {
+			logger.error(error, LogMessages.ERROR_LOAD_MODULE, moduleDirent.name);
+		}
 	}
 
 	/**
 	 * Loads, validates, and stores a single command from its file path.
 	 */
 	private async loadCommandFile(filePath: string) {
-		const fileName = path.basename(filePath);
-		logger.debug(LogMessages.DEBUG_LOAD_COMMAND_FILE_START, fileName);
+		try {
+			const fileName = path.basename(filePath);
+			logger.debug(LogMessages.DEBUG_LOAD_COMMAND_FILE_START, fileName);
 
-		const fileUrl = pathToFileURL(filePath).href;
+			const fileUrl = pathToFileURL(filePath).href;
 
-		const commandModule = await import(fileUrl);
-		const command = commandModule.default;
+			const commandModule = await import(fileUrl);
+			const command = commandModule.default;
 
-		if (!command.data.name || !command.execute) {
-			logger.warn(LogMessages.WARN_COMMAND_FILE_INVALID, fileName);
-			return;
+			if (!command.data.name || !command.execute) {
+				logger.warn(LogMessages.WARN_COMMAND_FILE_INVALID, fileName);
+				return;
+			}
+
+			const slashCommand = command as SlashCommand;
+
+			if (this.commands.has(slashCommand.data.name)) {
+				logger.warn(LogMessages.WARN_COMMAND_ALREADY_REGISTERED, fileName);
+				return;
+			}
+
+			this.commands.set(slashCommand.data.name, slashCommand);
+			logger.debug(LogMessages.DEBUG_LOAD_COMMAND_FILE_END, fileName);
+		} catch (error) {
+			const fileName = path.basename(filePath);
+			logger.error(error, LogMessages.ERROR_LOAD_COMMAND_FILE, fileName);
 		}
-
-		const slashCommand = command as SlashCommand;
-
-		if (this.commands.has(slashCommand.data.name)) {
-			logger.warn(LogMessages.WARN_COMMAND_ALREADY_REGISTERED, fileName);
-			return;
-		}
-
-		this.commands.set(slashCommand.data.name, slashCommand);
-		logger.debug(LogMessages.DEBUG_LOAD_COMMAND_FILE_END, fileName);
 	}
 
 	/**
@@ -126,43 +138,58 @@ export default class CommandsService {
 	 * (No changes needed in this method)
 	 */
 	private async registerCommands(): Promise<void> {
-		if (process.env.SKIP_COMMAND_REGISTRATION) {
-			logger.info(LogMessages.INFO_SKIP_COMMAND_REGISTRATION);
-			return;
-		}
+		try {
+			if (process.env.SKIP_COMMAND_REGISTRATION) {
+				logger.info(LogMessages.INFO_SKIP_COMMAND_REGISTRATION);
+				return;
+			}
 
-		logger.debug(LogMessages.DEBUG_REGISTER_COMMANDS_START, this.commands.size);
-		if (this.commands.size === 0) return;
-
-		const commandsData = this.commands.map((cmd) => cmd.data.toJSON());
-
-		if (this.guildId) {
-			await this.rest.put(
-				Routes.applicationGuildCommands(this.clientId, this.guildId),
-				{ body: commandsData },
+			logger.debug(
+				LogMessages.DEBUG_REGISTER_COMMANDS_START,
+				this.commands.size,
 			);
-		} else {
-			await this.rest.put(Routes.applicationCommands(this.clientId), {
-				body: commandsData,
-			});
+			if (this.commands.size === 0) return;
+
+			const commandsData = this.commands.map((cmd) => cmd.data.toJSON());
+
+			if (this.guildId) {
+				await this.rest.put(
+					Routes.applicationGuildCommands(this.clientId, this.guildId),
+					{ body: commandsData },
+				);
+			} else {
+				await this.rest.put(Routes.applicationCommands(this.clientId), {
+					body: commandsData,
+				});
+			}
+			logger.debug(LogMessages.DEBUG_REGISTER_COMMANDS_END);
+		} catch (error) {
+			logger.error(error, LogMessages.ERROR_REGISTER_COMMANDS);
 		}
-		logger.debug(LogMessages.DEBUG_REGISTER_COMMANDS_END);
 	}
 
 	/**
 	 * Handles incoming interactions and executes the corresponding command.
 	 */
 	async handleInteraction(interaction: Interaction<CacheType>): Promise<void> {
-		if (!interaction.isChatInputCommand()) return;
-		const { commandName } = interaction;
+		try {
+			if (!interaction.isChatInputCommand()) return;
+			const { commandName } = interaction;
 
-		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
+			logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
 
-		const command = this.commands.get(commandName);
+			const command = this.commands.get(commandName);
 
-		if (!command) return;
+			if (!command) return;
 
-		await command.execute(interaction);
-		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
+			await command.execute(interaction);
+			logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
+		} catch (error) {
+			const commandName = interaction.isChatInputCommand()
+				? interaction?.commandName
+				: "unknown";
+
+			logger.error(error, LogMessages.ERROR_HANDLE_INTERACTION, commandName);
+		}
 	}
 }

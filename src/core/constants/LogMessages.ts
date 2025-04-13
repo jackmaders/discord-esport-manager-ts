@@ -26,6 +26,13 @@ export default {
 	WARN_COMMAND_FILE_INVALID:
 		"Command file '%s' did not have the correct export; skipping.",
 	WARN_COMMAND_ALREADY_REGISTERED: "Command '%s' already registered; skipping.",
+	WARN_NO_COMMANDS_RECOGNISED: "No commands recognised after loading modules.",
+	ERROR_LOAD_MODULE: "Error loading module '%s'; skipping.",
+	ERROR_LOAD_COMMAND_FILE: "Error loading command file '%s'; skipping.",
+	ERROR_REGISTER_COMMANDS:
+		"Error registering commands; some commands may be unavailable.",
+	ERROR_HANDLE_INTERACTION:
+		"Error handling interaction '/%s'; attempting to provide error response.",
 
 	// Logger
 	DEBUG_LOGGER_INIT: "Logger initialized with level: '%s'",
