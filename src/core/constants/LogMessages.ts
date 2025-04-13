@@ -11,8 +11,6 @@ export default {
 	DEBUG_INIT_SERVICE_END: "Commands Service initialized.",
 	DEBUG_LOAD_MODULES_START: "Loading module(s)...",
 	DEBUG_LOAD_MODULES_END: "Module(s) loaded.",
-	DEBUG_LOAD_MODULE_START: "Loading '%s' module...",
-	DEBUG_LOAD_MODULE_END: "Module '%s' loaded.",
 	DEBUG_LOAD_COMMAND_FILE_START: "Loading '%s' command file...",
 	DEBUG_LOAD_COMMAND_FILE_END: "Command file '%s' loaded.",
 	DEBUG_REGISTER_COMMANDS_START: "Registering %s command(s)...",
