@@ -10,9 +10,9 @@ import {
 	Routes,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import logger from "../Logger";
-import commands from "../commands";
 import LogMessages from "../constants/LogMessages";
+import slashCommands from "../registry/slash-commands";
+import logger from "../setup/logger";
 import type { SlashCommand } from "../types/Commands";
 
 export default class CommandsService {
@@ -51,7 +51,7 @@ export default class CommandsService {
 		logger.debug(LogMessages.DEBUG_LOAD_MODULES_START);
 		this.commands.clear();
 
-		for (const command of commands) {
+		for (const command of slashCommands) {
 			if (!command?.data?.name || typeof command.execute !== "function") {
 				logger.warn(
 					LogMessages.WARN_COMMAND_FILE_INVALID,

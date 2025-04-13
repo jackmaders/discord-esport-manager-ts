@@ -1,9 +1,9 @@
 import { Events } from "discord.js";
-import logger from "./core/Logger";
-import client from "./core/client";
 import LogMessages from "./core/constants/LogMessages";
 import handleInteraction from "./core/handlers/interaction-handler";
 import CommandsService from "./core/services/commands.service";
+import client from "./core/setup/client";
+import logger from "./core/setup/logger";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
