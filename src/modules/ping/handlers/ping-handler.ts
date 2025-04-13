@@ -1,7 +1,7 @@
 import type { CacheType, ChatInputCommandInteraction } from "discord.js";
 import { MessageFlags } from "discord.js";
 
-export default async function handlePing(
+export default async function handlePingCommand(
 	interaction: ChatInputCommandInteraction<CacheType>,
 ): Promise<void> {
 	// Temporary hard-coded text

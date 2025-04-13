@@ -3,7 +3,7 @@ import {
 	InteractionContextType,
 	SlashCommandBuilder,
 } from "discord.js";
-import handlePing from "../handlers/ping.handler";
+import handlePingCommand from "../handlers/ping-handler";
 
 const pingCommand = {
 	data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ const pingCommand = {
 		.setDescription("Replies with Pong! and shows bot latency.")
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild]),
-	execute: handlePing,
+	execute: handlePingCommand,
 };
 
 export default pingCommand;

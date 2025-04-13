@@ -2,6 +2,7 @@ import { Events } from "discord.js";
 import logger from "./core/Logger";
 import client from "./core/client";
 import LogMessages from "./core/constants/LogMessages";
+import handleInteraction from "./core/handlers/interaction-handler";
 import CommandsService from "./core/services/commands.service";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -21,9 +22,8 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		const commandsService = new CommandsService(BOT_TOKEN, CLIENT_ID, GUILD_ID);
 		await commandsService.init();
 
-		client.on(
-			Events.InteractionCreate,
-			commandsService.handleInteraction.bind(commandsService),
+		client.on(Events.InteractionCreate, (interaction) =>
+			handleInteraction(interaction, commandsService),
 		);
 
 		client.once(Events.ClientReady, () =>

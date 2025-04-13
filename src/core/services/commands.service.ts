@@ -9,6 +9,7 @@ import {
 	REST,
 	Routes,
 } from "discord.js";
+import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
 import logger from "../Logger";
 import LogMessages from "../constants/LogMessages";
 import type { SlashCommand } from "../types/Commands";
@@ -135,7 +136,6 @@ export default class CommandsService {
 
 	/**
 	 * Registers the loaded slash commands with Discord's API.
-	 * (No changes needed in this method)
 	 */
 	private async registerCommands(): Promise<void> {
 		try {
@@ -180,7 +180,7 @@ export default class CommandsService {
 
 			const command = this.commands.get(commandName);
 
-			if (!command) return;
+			if (!command) throw new CommandNotFoundError(commandName);
 
 			await command.execute(interaction);
 			logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
