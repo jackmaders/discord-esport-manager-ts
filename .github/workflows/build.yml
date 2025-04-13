@@ -21,3 +21,5 @@ jobs:
 
       - name: 🛠️ Check Build Success
         run: bun run build
+        env:
+          NODE_ENV: production
