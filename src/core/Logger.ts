@@ -25,6 +25,6 @@ const loggerOptions: LoggerOptions = {
 
 const logger = pino(loggerOptions);
 
-logger.info(LogMessages.LOG_INFO_LOGGER_INIT, logLevel);
+logger.debug(LogMessages.DEBUG_LOGGER_INIT, logLevel);
 
 export default logger;
