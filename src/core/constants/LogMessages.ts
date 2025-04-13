@@ -3,6 +3,8 @@ export default {
 	MAIN_INFO_BOT_READY: "Bot is ready.",
 	MAIN_INFO_BOT_SHUTDOWN: "Shutting down bot...",
 
+	LOG_INFO_LOGGER_INIT: "Logger initialized with level: '%s'",
+
 	CH_INFO_INIT_COMMANDS: "Initialising commands...",
 	CH_INFO_REGISTER_COMMANDS: "Registering commands...",
 	CH_INFO_HANDLE_INTERACTION: "Handling interaction:",

@@ -1,29 +1,30 @@
 import pino, { type LoggerOptions } from "pino";
+import LogMessages from "./constants/LogMessages";
 
 const isProduction = process.env.NODE_ENV === "production";
 const isDevelopmentTTY = !isProduction && process.stdout.isTTY;
 const logLevel = process.env.LOG_LEVEL || (isProduction ? "info" : "debug");
 
+// Set development options for pino-pretty output
+const developmentOptions: Partial<LoggerOptions> = {
+	transport: {
+		target: "pino-pretty",
+		options: {
+			colorize: true,
+			translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
+			ignore: "pid,hostname",
+		},
+	},
+};
+
 const loggerOptions: LoggerOptions = {
 	level: logLevel,
-	base: {
-		pid: process.pid,
-	},
 	timestamp: pino.stdTimeFunctions.isoTime,
-	...(isDevelopmentTTY && {
-		transport: {
-			target: "pino-pretty",
-			options: {
-				colorize: true,
-				translateTime: "SYS:yyyy-mm-dd HH:MM:ss",
-				ignore: "pid,hostname",
-			},
-		},
-	}),
+	...(isDevelopmentTTY && developmentOptions),
 };
 
 const logger = pino(loggerOptions);
 
-logger.info(`Logger initialized with level "${logLevel}"`);
+logger.info(LogMessages.LOG_INFO_LOGGER_INIT, logLevel);
 
 export default logger;
