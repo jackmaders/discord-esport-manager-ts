@@ -1,5 +1,6 @@
 import { Events } from "discord.js";
 import CommandHandler from "./core/CommandHandler";
+import logger from "./core/Logger";
 import client from "./core/client";
 import LogMessages from "./core/constants/LogMessages";
 
@@ -14,10 +15,9 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		throw new Error("Missing required environment variable: DISCORD_CLIENT_ID");
 
 	try {
-		// TODO: Implement a logger library
-		console.info(LogMessages.MAIN_INFO_BOT_START);
-		client.on(Events.Error, console.error);
-		client.on(Events.Warn, console.warn);
+		logger.info(LogMessages.MAIN_INFO_BOT_START);
+		client.on(Events.Error, logger.error);
+		client.on(Events.Warn, logger.warn);
 		const commandHandler = new CommandHandler(BOT_TOKEN, CLIENT_ID, GUILD_ID);
 
 		client.on(
@@ -26,24 +26,24 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		);
 
 		client.once(Events.ClientReady, () =>
-			console.info(LogMessages.MAIN_INFO_BOT_READY),
+			logger.info(LogMessages.MAIN_INFO_BOT_READY),
 		);
 
 		await client.login(BOT_TOKEN);
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		process.exit(1);
 	}
 })();
 
 process.on("SIGINT", () => {
-	console.info(LogMessages.MAIN_INFO_BOT_SHUTDOWN);
+	logger.info(LogMessages.MAIN_INFO_BOT_SHUTDOWN);
 	client.destroy();
 	process.exit(0);
 });
 
 process.on("SIGTERM", () => {
-	console.info(LogMessages.MAIN_INFO_BOT_SHUTDOWN);
+	logger.info(LogMessages.MAIN_INFO_BOT_SHUTDOWN);
 	client.destroy();
 	process.exit(0);
 });

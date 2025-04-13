@@ -2,6 +2,7 @@ import { Collection, type Interaction, REST, Routes } from "discord.js";
 
 import pingCommand from "../modules/ping/commands/ping-command";
 import handlePing from "../modules/ping/handlers/ping-handler";
+import logger from "./Logger";
 import LogMessages from "./constants/LogMessages";
 import type { SlashCommand } from "./types/Commands";
 
@@ -18,7 +19,7 @@ export default class CommandHandler {
 	}
 
 	initialiseCommands() {
-		console.info(LogMessages.CH_INFO_INIT_COMMANDS);
+		logger.info(LogMessages.CH_INFO_INIT_COMMANDS);
 
 		this.commands.clear();
 
@@ -30,7 +31,7 @@ export default class CommandHandler {
 	}
 
 	async registerCommands() {
-		console.info(LogMessages.CH_INFO_REGISTER_COMMANDS);
+		logger.info(LogMessages.CH_INFO_REGISTER_COMMANDS);
 		const rest = new REST({ version: "10" }).setToken(this.botToken);
 
 		const commandsValues = Array.from(this.commands.values());
@@ -56,14 +57,14 @@ export default class CommandHandler {
 		const command = this.commands.get(interaction.commandName);
 
 		if (!command) {
-			console.error(
+			logger.error(
 				LogMessages.CH_ERROR_COMMAND_NOT_FOUND,
 				interaction.commandName,
 			);
 			return;
 		}
 
-		console.info(
+		logger.info(
 			LogMessages.CH_INFO_HANDLE_INTERACTION,
 			interaction.commandName,
 		);
