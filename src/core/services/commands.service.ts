@@ -21,7 +21,6 @@ export default class CommandsService {
 	private readonly token: string;
 	private readonly clientId: string;
 	private readonly guildId?: string;
-	private readonly modulesPath = path.join(process.cwd(), "src", "modules");
 
 	constructor(token: string, clientId: string, guildId?: string) {
 		if (!token) throw new Error("CommandsService requires a bot token.");
