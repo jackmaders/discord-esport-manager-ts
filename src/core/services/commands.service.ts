@@ -1,21 +1,23 @@
 import { Collection, type Interaction, REST, Routes } from "discord.js";
 
-import pingCommand from "../modules/ping/commands/ping-command";
-import handlePing from "../modules/ping/handlers/ping-handler";
-import logger from "./Logger";
-import LogMessages from "./constants/LogMessages";
-import type { SlashCommand } from "./types/Commands";
+import pingCommand from "../../modules/ping/commands/ping-command";
+import handlePing from "../../modules/ping/handlers/ping-handler";
+import logger from "../Logger";
+import LogMessages from "../constants/LogMessages";
+import type { SlashCommand } from "../types/Commands";
 
-export default class CommandHandler {
+export default class CommandsService {
 	commands = new Collection<string, SlashCommand>();
 
 	constructor(
 		private botToken: string,
 		private clientId: string,
 		private guildId?: string,
-	) {
+	) {}
+
+	async init() {
 		this.initialiseCommands();
-		this.registerCommands();
+		await this.registerCommands();
 	}
 
 	initialiseCommands() {

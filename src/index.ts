@@ -1,8 +1,8 @@
 import { Events } from "discord.js";
-import CommandHandler from "./core/CommandHandler";
 import logger from "./core/Logger";
 import client from "./core/client";
 import LogMessages from "./core/constants/LogMessages";
+import CommandsService from "./core/services/commands.service";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -18,11 +18,12 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		logger.info(LogMessages.MAIN_INFO_BOT_START);
 		client.on(Events.Error, logger.error);
 		client.on(Events.Warn, logger.warn);
-		const commandHandler = new CommandHandler(BOT_TOKEN, CLIENT_ID, GUILD_ID);
+		const commandsService = new CommandsService(BOT_TOKEN, CLIENT_ID, GUILD_ID);
+		await commandsService.init();
 
 		client.on(
 			Events.InteractionCreate,
-			commandHandler.handleInteraction.bind(commandHandler),
+			commandsService.handleInteraction.bind(commandsService),
 		);
 
 		client.once(Events.ClientReady, () =>
