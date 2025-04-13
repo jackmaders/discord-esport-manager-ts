@@ -35,7 +35,7 @@ export default class CommandsService {
 	/**
 	 * Loads commands dynamically and registers them with Discord.
 	 */
-	async init(): Promise<void> {
+	async init() {
 		logger.debug(LogMessages.DEBUG_INIT_SERVICE_START);
 
 		await this.loadModules();
@@ -47,7 +47,7 @@ export default class CommandsService {
 	/**
 	 * Orchestrates the loading of commands by finding modules and processing them.
 	 */
-	private async loadModules(): Promise<void> {
+	private async loadModules() {
 		logger.debug(LogMessages.DEBUG_LOAD_MODULES_START);
 
 		this.commands.clear();
@@ -76,11 +76,16 @@ export default class CommandsService {
 
 			const moduleName = moduleDirent.name;
 			const commandsPath = path.join(this.modulesPath, moduleName, "commands");
-			const stats = await stat(commandsPath);
-			const commandsDirExists = stats.isDirectory();
+			try {
+				const stats = await stat(commandsPath);
+				const commandsDirExists = stats.isDirectory();
 
-			if (!commandsDirExists) {
-				logger.debug(LogMessages.DEBUG_NO_COMMANDS_FOUND, moduleDirent.name);
+				if (!commandsDirExists) {
+					logger.debug(LogMessages.DEBUG_NO_COMMANDS_FOUND, moduleName);
+					return;
+				}
+			} catch (error) {
+				logger.debug(LogMessages.DEBUG_NO_COMMANDS_FOUND, moduleName);
 				return;
 			}
 
@@ -137,7 +142,7 @@ export default class CommandsService {
 	/**
 	 * Registers the loaded slash commands with Discord's API.
 	 */
-	private async registerCommands(): Promise<void> {
+	private async registerCommands() {
 		try {
 			if (process.env.SKIP_COMMAND_REGISTRATION) {
 				logger.info(LogMessages.INFO_SKIP_COMMAND_REGISTRATION);
@@ -171,25 +176,17 @@ export default class CommandsService {
 	/**
 	 * Handles incoming interactions and executes the corresponding command.
 	 */
-	async handleInteraction(interaction: Interaction<CacheType>): Promise<void> {
-		try {
-			if (!interaction.isChatInputCommand()) return;
-			const { commandName } = interaction;
+	async handleInteraction(interaction: Interaction<CacheType>) {
+		if (!interaction.isChatInputCommand()) return;
+		const { commandName } = interaction;
 
-			logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
+		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
 
-			const command = this.commands.get(commandName);
+		const command = this.commands.get(commandName);
 
-			if (!command) throw new CommandNotFoundError(commandName);
+		if (!command) throw new CommandNotFoundError(commandName);
 
-			await command.execute(interaction);
-			logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
-		} catch (error) {
-			const commandName = interaction.isChatInputCommand()
-				? interaction?.commandName
-				: "unknown";
-
-			logger.error(error, LogMessages.ERROR_HANDLE_INTERACTION, commandName);
-		}
+		await command.execute(interaction);
+		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
 	}
 }
