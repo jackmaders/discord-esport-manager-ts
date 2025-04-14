@@ -175,6 +175,6 @@ dist
 .DS_Store
 
 # Prisma SQLite database
-prisma/generated
+src/generated/prisma
 prisma/dev.db
 prisma/dev.db-journal
