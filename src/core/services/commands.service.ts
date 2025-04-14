@@ -1,7 +1,3 @@
-import type { Dirent } from "node:fs";
-import { readdir, stat } from "node:fs/promises";
-import path from "node:path";
-import { pathToFileURL } from "node:url";
 import {
 	type CacheType,
 	Collection,
@@ -10,9 +6,9 @@ import {
 	Routes,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import LogMessages from "../constants/LogMessages";
+import logger from "../logger/logger";
+import LogMessages from "../logger/message";
 import slashCommands from "../registry/slash-commands";
-import logger from "../setup/logger";
 import type { SlashCommand } from "../types/Commands";
 
 export default class CommandsService {

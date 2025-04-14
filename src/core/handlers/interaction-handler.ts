@@ -5,9 +5,9 @@ import {
 	type MessagePayload,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import LogMessages from "../constants/LogMessages";
+import logger from "../logger/logger";
+import LogMessages from "../logger/message";
 import type CommandsService from "../services/commands.service";
-import logger from "../setup/logger";
 
 async function handleInteraction(
 	interaction: Interaction,
