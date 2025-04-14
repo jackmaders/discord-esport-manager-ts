@@ -72,7 +72,7 @@
 
 - Avoid using `console.log()` and hard-coding strings for logging.
 - Instead, you should use the existing pino logger with the message added to the 'logger/log-messages.ts' file.
-- The keys for the logMessages object should be snake case and follow this structure `[LogLevel]_[Object]_[Action]`.
+- The keys for the logMessages object should be upper snake case and follow this structure `[LogLevel]_[Object]_[Action]`.
 - Logs should use the interpolation functionality provided by pino wherever reasonable.
 
   ```typescript
