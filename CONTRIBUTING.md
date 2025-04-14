@@ -1,3 +1,5 @@
+# Contribution Guide
+
 ## Development Setup
 
 ### Prerequisites
@@ -8,22 +10,40 @@
 
 ### Setup
 
-1.  **Install dependencies:**
+```bash
+# Install dependencies
+bun install
+```
 
-    ```bash
-    bun install
-    ```
+```bash
+# Setup environment variables
+# Ensure to set the relevant variables in the new .env file
+cp .env.example .env
+```
 
-2.  **Configure environment variables:**
+```bash
+# Setup database
+bunx prisma migrate dev
+```
 
-    - Make a copy of the `.env.example` in the root directory, and rename to `.env`.
-    - Set the required variables for your `.env` file.
+```bash
+# Run the bot
+bun run start
+```
 
-3.  **Run the bot:**
+### Database changes
 
-    ```bash
-    bun run start
-    ```
+If you make any changes to `prisma/schema.prisma` you will need to re-run the database migration command.
+
+```bash
+bunx prisma migrate dev
+```
+
+During development, the database migration command will likely automatically generate a typed Prisma Client based on your schema. However, you may need to generate one manually with the below script.
+
+```bash
+bunx prisma generate
+```
 
 ## Coding Standards
 
@@ -32,21 +52,21 @@
 - Avoid the Deprecated `ephemeral: true` option when sending replies or follow-ups that should only be visible to the user.
 - Instead, you should import `MessageFlags` from `discord.js` and use the `flags` property on the reply or follow-up.
 
-  ```typescript
-  import { MessageFlags } from "discord.js";
+```typescript
+import { MessageFlags } from "discord.js";
 
-  // Correct
-  await interaction.reply({
-    content,
-    flags: [MessageFlags.Ephemeral],
-  });
+// Correct
+await interaction.reply({
+  content,
+  flags: [MessageFlags.Ephemeral],
+});
 
-  // Incorrect
-  // await interaction.reply({
-  //     content,
-  //     ephemeral: true // <-- Do not use
-  // });
-  ```
+// Incorrect
+// await interaction.reply({
+//     content,
+//     ephemeral: true // <-- Do not use
+// });
+```
 
 ### Internationalization
 
@@ -89,9 +109,11 @@
   // logger.info("Action Succeeded: %s", actionName)
   ```
 
-- Trace: Temporary logs added to debug specific functionality.
-- Debug: Implementation-specific logs for individual modules or utilities.
-- Info: Top-level bot functionality and interactions.
-- Warn: Undesirable situation, but we are able to continue execution.
-- Error: Undesirable situation, we are not able to continue execution.
-- Fatal: Fatal error in core bot functionality. Shutting down.
+  | Level | Description                                                            |
+  | ----- | ---------------------------------------------------------------------- |
+  | Trace | Temporary logs added to debug specific functionality.                  |
+  | Debug | Implementation-specific logs for individual modules or utilities.      |
+  | Info  | Top-level bot functionality and interactions.                          |
+  | Warn  | Undesirable situation, but the bot is able to continue execution.      |
+  | Error | Undesirable situation; the bot cannot continue the specific operation. |
+  | Fatal | Fatal error in core bot functionality, potentially requiring shutdown. |
