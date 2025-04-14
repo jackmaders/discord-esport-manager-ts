@@ -1,12 +1,13 @@
 #!/usr/bin/env bun
 // Filename: generate-review-prompt.ts
+// Version: Parallel file reading
 
-import { promises as fs } from "node:fs"; // Import fs.promises for directory creation
+import { promises as fs } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "bun";
 
 // --- Configuration ---
-const MAIN_BRANCH_NAMES = ["main", "master"]; // Add other possible main branch names
+const MAIN_BRANCH_NAMES = ["main", "master"];
 const IMPORTANT_FILES = [
 	"README.md",
 	"CONTRIBUTING.md",
@@ -16,10 +17,10 @@ const IMPORTANT_FILES = [
 	".eslintrc.json", // Or other eslint config names
 	".prettierrc.json", // Or other prettier config names
 	"CODE_OF_CONDUCT.md",
-	// Add any other project-specific important files (e.g., architecture docs, key config files)
+	// Add any other project-specific important files
 ];
-const MAX_FILE_SIZE_MB = 5; // Limit size of files included to avoid overly large prompts
-const OUTPUT_FILE_PATH = "./.temp/review-prompt.md"; // <<< Define output file path
+const MAX_FILE_SIZE_MB = 5;
+const OUTPUT_FILE_PATH = "./.temp/review-prompt.md";
 
 // --- Helper Functions ---
 
@@ -34,10 +35,10 @@ function runSync(cmd: string, args: string[]): string {
 	if (exitCode !== 0) {
 		console.error(`❌ Error running command: ${cmd} ${args.join(" ")}`);
 		console.error(`   Exit Code: ${exitCode}`);
-		console.error(`   Stderr: ${stderr}`);
-		throw new Error(`Command failed: ${cmd}`);
+		console.error(`   Stderr: ${stderr.toString()}`); // Ensure stderr is string
+		throw new Error(`Command failed: ${cmd} ${args.join(" ")}`);
 	}
-	// console.log(`✅ Command successful: ${cmd} ${args.join(' ')}`); // Optional success log
+	// console.log(`✅ Command successful: ${cmd} ${args.join(' ')}`);
 	return stdout.toString().trim();
 }
 
@@ -46,6 +47,7 @@ function runSync(cmd: string, args: string[]): string {
  */
 async function findMainBranch(): Promise<string> {
 	console.log("⏳ Detecting main branch...");
+	// No async operation here, runSync is sync, so keep as is.
 	const branches = runSync("git", ["branch", "-a"])
 		.split("\n")
 		.map((b) =>
@@ -53,7 +55,7 @@ async function findMainBranch(): Promise<string> {
 				.trim()
 				.replace(/^\*?\s*/, "")
 				.replace(/^remotes\/origin\//, ""),
-		); // Clean up branch names
+		);
 
 	const branchSet = new Set(branches);
 
@@ -70,23 +72,26 @@ async function findMainBranch(): Promise<string> {
 
 /**
  * Reads a file's content using Bun.file, handling potential errors and size limits.
+ * Returns the content as a string, a placeholder string for errors/size limits, or null if non-existent.
  */
 async function readFileContent(filePath: string): Promise<string | null> {
 	try {
-		const resolvedPath = path.resolve(filePath); // Ensure absolute path for Bun.file
+		const resolvedPath = path.resolve(filePath);
 		const file = Bun.file(resolvedPath);
 		if (!(await file.exists())) {
-			// console.warn(`   Skipping non-existent file: ${filePath}`); // Less verbose
-			return null;
+			// console.warn(`   Skipping non-existent file: ${filePath}`);
+			return null; // Indicate file doesn't exist
 		}
 
 		if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
 			console.warn(
-				`   ⚠️ Skipping large file (${(file.size / (1024 * 1024)).toFixed(2)} MB): ${filePath}`,
+				`   ⚠️ Skipping large file (${(file.size / (1024 * 1024)).toFixed(
+					2,
+				)} MB): ${filePath}`,
 			);
 			return `--- File content skipped (Too large: > ${MAX_FILE_SIZE_MB}MB) ---`;
 		}
-		// console.log(`   Reading file: ${filePath}`); // Optional log
+		// console.log(`   Reading file: ${filePath}`);
 		return await file.text();
 	} catch (error) {
 		console.error(`   ❌ Error reading file ${filePath}:`, error);
@@ -95,11 +100,10 @@ async function readFileContent(filePath: string): Promise<string | null> {
 }
 
 // --- Main Script Logic ---
-
-async function generateCodeReviewPrompt() {
+(async () => {
 	try {
 		// 1. Determine Branches
-		const mainBranch = await findMainBranch();
+		const mainBranch = await findMainBranch(); // Remains async due to potential future changes, but currently runs sync git command
 		const currentBranch = runSync("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
 		console.log(`✅ Current branch: ${currentBranch}`);
 		if (currentBranch === mainBranch) {
@@ -124,39 +128,51 @@ async function generateCodeReviewPrompt() {
 
 		if (changedFilesPaths.length === 0 && !diff) {
 			console.log("ℹ️ No changes detected between branches.");
-			// Consider if you still want to generate a file or exit early
 		}
 
-		// 4. Read Content of Changed Files
-		console.log("\n⏳ Reading changed files...");
+		// 4. Read Content of Changed Files (in Parallel) <<< MODIFIED SECTION
+		console.log("\n⏳ Reading changed files (in parallel)...");
 		let changedFilesContent = "";
-		for (const filePath of changedFilesPaths) {
-			const content = await readFileContent(filePath);
-			if (content !== null) {
-				changedFilesContent += `--- START FILE: ${filePath} ---\n`;
-				changedFilesContent += content;
-				changedFilesContent += `\n--- END FILE: ${filePath} ---\n\n`;
-			}
+		if (changedFilesPaths.length > 0) {
+			const changedFilePromises = changedFilesPaths.map(readFileContent); // Create promises
+			const changedFileResults = await Promise.all(changedFilePromises); // Execute in parallel
+
+			// Process results, associating them back to their paths
+			changedFileResults.forEach((content, index) => {
+				if (content !== null) {
+					// Skip non-existent files
+					const filePath = changedFilesPaths[index];
+					changedFilesContent += `--- START FILE: ${filePath} ---\n`;
+					changedFilesContent += content; // Content might be actual text or an error/skip message
+					changedFilesContent += `\n--- END FILE: ${filePath} ---\n\n`;
+				}
+			});
 		}
 		console.log("✅ Finished reading changed files.");
 
-		// 5. Read Content of Important Project Files
-		console.log("\n⏳ Reading important project files...");
+		// 5. Read Content of Important Project Files (in Parallel) <<< MODIFIED SECTION
+		console.log("\n⏳ Reading important project files (in parallel)...");
 		let importantFilesContent = "";
-		for (const filePath of IMPORTANT_FILES) {
-			const content = await readFileContent(filePath);
-			if (content !== null) {
-				// console.log(`   Read important file: ${filePath}`); // Optional log
-				importantFilesContent += `--- START FILE: ${filePath} ---\n`;
-				importantFilesContent += content;
-				importantFilesContent += `\n--- END FILE: ${filePath} ---\n\n`;
-			} else {
-				// console.log(`   Skipped important file (not found): ${filePath}`); // Optional log
-			}
+		if (IMPORTANT_FILES.length > 0) {
+			const importantFilePromises = IMPORTANT_FILES.map(readFileContent); // Create promises
+			const importantFileResults = await Promise.all(importantFilePromises); // Execute in parallel
+
+			// Process results
+			importantFileResults.forEach((content, index) => {
+				if (content !== null) {
+					// Skip non-existent files (readFileContent returns null)
+					const filePath = IMPORTANT_FILES[index];
+					importantFilesContent += `--- START FILE: ${filePath} ---\n`;
+					importantFilesContent += content; // Content might be actual text or an error/skip message
+					importantFilesContent += `\n--- END FILE: ${filePath} ---\n\n`;
+				} else {
+					// console.log(`   Skipped important file (not found): ${IMPORTANT_FILES[index]}`);
+				}
+			});
 		}
 		console.log("✅ Finished reading important files.");
 
-		// 6. Define LLM Instructions (Keep this section as is)
+		// 6. Define LLM Instructions (Keep this section as is from original)
 		const llmInstructions = `# AI Code Review Request
 
 **Objective:** Please perform a thorough code review of the provided changes.
@@ -210,7 +226,7 @@ async function generateCodeReviewPrompt() {
     * Are resources cleaned up properly in case of errors (e.g., file handles, network connections)?
 `;
 
-		// 7. Assemble the final prompt (Keep this section as is)
+		// 7. Assemble the final prompt (Keep this section as is from original)
 		console.log("\n⏳ Assembling final prompt...");
 		const prompt = `${llmInstructions}
 
@@ -248,37 +264,29 @@ ${importantFilesContent || "No important project files found or readable."}
 * If you have any questions or need clarifications, feel free to ask.`;
 		console.log("✅ Prompt assembled.");
 
-		// 8. Ensure output directory exists and write the prompt to the file <<< MODIFIED SECTION
+		// 8. Ensure output directory exists and write the prompt to the file
 		console.log(`\n⏳ Writing prompt to file: ${OUTPUT_FILE_PATH}...`);
 		try {
 			const outputDir = path.dirname(OUTPUT_FILE_PATH);
-			// Use fs.promises.mkdir for async directory creation
-			await fs.mkdir(outputDir, { recursive: true });
+			await fs.mkdir(outputDir, { recursive: true }); // Async directory creation
 
-			// Use Bun.write to write the prompt string to the specified file path
-			await Bun.write(OUTPUT_FILE_PATH, prompt);
+			await Bun.write(OUTPUT_FILE_PATH, prompt); // Async write
 
 			console.log(
 				`✅ Prompt successfully written to: ${path.resolve(OUTPUT_FILE_PATH)}`,
-			); // Show absolute path
+			);
 		} catch (writeError) {
 			console.error(`❌ Failed to write prompt to file: ${OUTPUT_FILE_PATH}`);
 			console.error(writeError);
-			// Re-throw or handle as needed, maybe exit differently
-			throw writeError;
+			throw writeError; // Re-throw to be caught by the main catch block
 		}
 	} catch (error) {
 		console.error("\n--- ❌ Failed to generate code review prompt ---");
 		if (error instanceof Error) {
 			console.error(`Error: ${error.message}`);
-			// Optionally log stack trace for more detail
-			// console.error(error.stack);
 		} else {
 			console.error("An unknown error occurred:", error);
 		}
-		process.exit(1); // Exit with error code
+		process.exit(1);
 	}
-}
-
-// Run the main function
-generateCodeReviewPrompt();
+})();
