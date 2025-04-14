@@ -6,8 +6,8 @@ import {
 	Routes,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import logger from "../logger/logger";
-import LogMessages from "../logger/message";
+import LogMessages from "../logger/messages";
+import logger from "../logger/setup";
 import slashCommands from "../registry/slash-commands";
 import type { SlashCommand } from "../types/Commands";
 
