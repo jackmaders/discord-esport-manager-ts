@@ -47,15 +47,3 @@
   //     ephemeral: true // <-- Do not use
   // });
   ```
-
-### Logging Strings
-
-- Logging string should not be hard-coded directly into the logic of the bot.
-- Instead, they should be stored within a relevant `LogMessages.ts` file for the module.
-- The LogMessages.ts should have a single default export of an object containing the logging strings.
-  -The keys of the object should be in the this format: `[File Abbreviation]_[Log Level]_[Action]`. e.g. `IDX_DEBUG_CLIENT_LOGIN`
-
-### User-Facing Strings
-
-- User-facing string should not be hard-coded directly into the logic of the bot.
-- Instead, they should be handled by i18n.

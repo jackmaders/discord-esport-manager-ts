@@ -1,5 +1,5 @@
 import pino, { type LoggerOptions } from "pino";
-import LogMessages from "./constants/LogMessages";
+import LogMessages from "./messages";
 
 const isProduction = process.env.NODE_ENV === "production";
 const isDevelopmentTTY = !isProduction && process.stdout.isTTY;
