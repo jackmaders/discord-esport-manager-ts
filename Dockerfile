@@ -20,6 +20,9 @@ COPY . .
 # Set production environment
 ENV NODE_ENV="production"
 
+# Generate Prisma client
+RUN bunx prisma generate
+
 # Build the application, bundling dependencies into ./dist
 RUN bun run build
 
