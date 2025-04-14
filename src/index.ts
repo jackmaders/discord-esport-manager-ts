@@ -1,8 +1,9 @@
 import { Events } from "discord.js";
-import client from "./core/client/setup";
+import client from "./core/client";
 import handleInteraction from "./core/handlers/interaction-handler";
-import LogMessages from "./core/logger/messages";
-import logger from "./core/logger/setup";
+import initI18n from "./core/i18n";
+import logger from "./core/logger";
+import logMessages from "./core/logger/messages";
 import CommandsService from "./core/services/commands.service";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -16,22 +17,26 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 		throw new Error("Missing required environment variable: DISCORD_CLIENT_ID");
 
 	try {
-		logger.info(LogMessages.INFO_BOT_START);
-		client.on(Events.Error, logger.error);
-		client.on(Events.Warn, logger.warn);
+		logger.info(logMessages.INFO_BOT_START);
+
+		await initI18n();
+
 		const commandsService = new CommandsService(BOT_TOKEN, CLIENT_ID, GUILD_ID);
 		await commandsService.init();
+
+		client.on(Events.Error, logger.error);
+		client.on(Events.Warn, logger.warn);
 
 		client.on(Events.InteractionCreate, (interaction) =>
 			handleInteraction(interaction, commandsService),
 		);
 
 		client.once(Events.ClientReady, () =>
-			logger.info(LogMessages.INFO_BOT_READY),
+			logger.info(logMessages.INFO_BOT_READY),
 		);
 
 		await client.login(BOT_TOKEN);
-		logger.info(LogMessages.INFO_BOT_LOGIN, client.user?.tag);
+		logger.info(logMessages.INFO_BOT_LOGIN, client.user?.tag);
 	} catch (error) {
 		logger.error(error);
 		process.exit(1);
@@ -39,13 +44,13 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 })();
 
 process.on("SIGINT", () => {
-	logger.info(LogMessages.INFO_BOT_SHUTDOWN);
+	logger.info(logMessages.INFO_BOT_SHUTDOWN);
 	client.destroy();
 	process.exit(0);
 });
 
 process.on("SIGTERM", () => {
-	logger.info(LogMessages.INFO_BOT_SHUTDOWN);
+	logger.info(logMessages.INFO_BOT_SHUTDOWN);
 	client.destroy();
 	process.exit(0);
 });

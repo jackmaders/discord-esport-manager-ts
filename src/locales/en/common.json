@@ -1,0 +1,7 @@
+{
+	"error": {
+		"unexpected": "An unexpected error occurred while processing your command.",
+		"commandNotFound": "The command '/{{commandName}}' could not be found. It might have been removed or changed.",
+		"interactionNotRepliable": "Interaction not repliable; cannot send error message."
+	}
+}

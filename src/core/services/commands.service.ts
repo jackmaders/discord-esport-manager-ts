@@ -6,8 +6,8 @@ import {
 	Routes,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import LogMessages from "../logger/messages";
-import logger from "../logger/setup";
+import logger from "../logger";
+import logMessages from "../logger/messages";
 import slashCommands from "../registry/slash-commands";
 import type { SlashCommand } from "../types/Commands";
 
@@ -32,44 +32,44 @@ export default class CommandsService {
 	 * Loads commands and registers them with Discord.
 	 */
 	async init() {
-		logger.debug(LogMessages.DEBUG_INIT_SERVICE_START);
+		logger.debug(logMessages.DEBUG_INIT_SERVICE_START);
 
 		this.loadModules();
 		await this.registerCommands();
 
-		logger.debug(LogMessages.DEBUG_INIT_SERVICE_END);
+		logger.debug(logMessages.DEBUG_INIT_SERVICE_END);
 	}
 
 	/**
 	 * Loads all modules and their commands.
 	 */
 	private loadModules() {
-		logger.debug(LogMessages.DEBUG_LOAD_MODULES_START);
+		logger.debug(logMessages.DEBUG_LOAD_MODULES_START);
 		this.commands.clear();
 
 		for (const command of slashCommands) {
 			if (!command?.data?.name || typeof command.execute !== "function") {
 				logger.warn(
-					LogMessages.WARN_COMMAND_FILE_INVALID,
+					logMessages.WARN_COMMAND_FILE_INVALID,
 					command?.data?.name || "unknown command",
 				);
 				continue;
 			}
 			if (this.commands.has(command.data.name)) {
 				logger.warn(
-					LogMessages.WARN_COMMAND_ALREADY_REGISTERED,
+					logMessages.WARN_COMMAND_ALREADY_REGISTERED,
 					command.data.name,
 				);
 				continue;
 			}
 			this.commands.set(command.data.name, command);
-			logger.debug(LogMessages.DEBUG_LOAD_COMMAND_FILE_END, command.data.name);
+			logger.debug(logMessages.DEBUG_LOAD_COMMAND_FILE_END, command.data.name);
 		}
 
 		if (this.commands.size === 0) {
-			logger.warn(LogMessages.WARN_NO_COMMANDS_RECOGNISED);
+			logger.warn(logMessages.WARN_NO_COMMANDS_RECOGNISED);
 		}
-		logger.debug(LogMessages.DEBUG_LOAD_MODULES_END);
+		logger.debug(logMessages.DEBUG_LOAD_MODULES_END);
 	}
 
 	/**
@@ -78,12 +78,12 @@ export default class CommandsService {
 	private async registerCommands() {
 		try {
 			if (process.env.SKIP_COMMAND_REGISTRATION) {
-				logger.info(LogMessages.INFO_SKIP_COMMAND_REGISTRATION);
+				logger.info(logMessages.INFO_SKIP_COMMAND_REGISTRATION);
 				return;
 			}
 
 			logger.debug(
-				LogMessages.DEBUG_REGISTER_COMMANDS_START,
+				logMessages.DEBUG_REGISTER_COMMANDS_START,
 				this.commands.size,
 			);
 			if (this.commands.size === 0) return;
@@ -100,9 +100,9 @@ export default class CommandsService {
 					body: commandsData,
 				});
 			}
-			logger.debug(LogMessages.DEBUG_REGISTER_COMMANDS_END);
+			logger.debug(logMessages.DEBUG_REGISTER_COMMANDS_END);
 		} catch (error) {
-			logger.error(error, LogMessages.ERROR_REGISTER_COMMANDS);
+			logger.error(error, logMessages.ERROR_REGISTER_COMMANDS);
 		}
 	}
 
@@ -113,13 +113,13 @@ export default class CommandsService {
 		if (!interaction.isChatInputCommand()) return;
 		const { commandName } = interaction;
 
-		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
+		logger.debug(logMessages.DEBUG_HANDLE_INTERACTION_START, commandName);
 
 		const command = this.commands.get(commandName);
 
 		if (!command) throw new CommandNotFoundError(commandName);
 
 		await command.execute(interaction);
-		logger.debug(LogMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
+		logger.debug(logMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
 	}
 }
