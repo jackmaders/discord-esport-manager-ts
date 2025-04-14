@@ -4,9 +4,10 @@ import {
 	MessageFlags,
 	type MessagePayload,
 } from "discord.js";
+import { t } from "i18next";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import LogMessages from "../logger/messages";
-import logger from "../logger/setup";
+import logger from "../logger";
+import logMessages from "../logger/messages";
 import type CommandsService from "../services/commands.service";
 
 async function handleInteraction(
@@ -19,20 +20,22 @@ async function handleInteraction(
 	} catch (error) {
 		logger.error(
 			error,
-			LogMessages.ERROR_HANDLE_INTERACTION,
+			logMessages.ERROR_HANDLE_INTERACTION,
 			interaction.commandName,
 		);
 
-		let content = "An unexpected error occurred while processing your command.";
+		let content = t("common:errorOccurred");
 
 		if (!interaction.isRepliable()) {
-			logger.warn(LogMessages.WARN_INTERACTION_NOT_REPLIABLE);
+			logger.warn(logMessages.WARN_INTERACTION_NOT_REPLIABLE);
 			return;
 		}
 
 		if (error instanceof CommandNotFoundError) {
-			content = `The command '/${error.commandName}' could not be found. It might have been removed or changed.`;
-			logger.warn(LogMessages.WARN_COMMAND_NOT_FOUND, error.commandName);
+			content = t("common:errorCommandNotFound", {
+				commandName: error.commandName,
+			});
+			logger.warn(logMessages.WARN_COMMAND_NOT_FOUND, error.commandName);
 		}
 
 		replyToInteraction(interaction, content);

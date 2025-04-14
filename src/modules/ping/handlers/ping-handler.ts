@@ -1,11 +1,12 @@
 import type { CacheType, ChatInputCommandInteraction } from "discord.js";
 import { MessageFlags } from "discord.js";
+import { t } from "i18next";
 
 export default async function handlePingCommand(
 	interaction: ChatInputCommandInteraction<CacheType>,
 ): Promise<void> {
 	await interaction.reply({
-		content: "Pinging...",
+		content: t("ping:pinging"),
 		flags: [MessageFlags.Ephemeral],
 	});
 
@@ -13,6 +14,9 @@ export default async function handlePingCommand(
 	const websocketHeartbeat = interaction.client.ws.ping;
 
 	await interaction.editReply(
-		`Pong! 🏓\nRound trip latency: ${latency}ms\nWebSocket heartbeat: ${websocketHeartbeat}ms`,
+		t("ping:pong", {
+			latency: latency,
+			websocketHeartbeat: websocketHeartbeat,
+		}),
 	);
 }

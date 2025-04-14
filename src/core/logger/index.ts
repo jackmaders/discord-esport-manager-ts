@@ -1,5 +1,5 @@
 import pino, { type LoggerOptions } from "pino";
-import LogMessages from "./messages";
+import logMessages from "./messages";
 
 const isProduction = process.env.NODE_ENV === "production";
 const isDevelopmentTTY = !isProduction && process.stdout.isTTY;
@@ -25,6 +25,6 @@ const loggerOptions: LoggerOptions = {
 
 const logger = pino(loggerOptions);
 
-logger.debug(LogMessages.DEBUG_LOGGER_INIT, logLevel);
+logger.debug(logMessages.DEBUG_LOGGER_INIT, logLevel);
 
 export default logger;

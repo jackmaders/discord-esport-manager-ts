@@ -5,6 +5,9 @@ export default {
 	INFO_BOT_READY: "Bot is ready.",
 	INFO_BOT_SHUTDOWN: "Shutting down bot...",
 
+	// I18n
+	DEBUG_I18N_INIT: "I18n initialized.",
+
 	// Commands Service
 	INFO_SKIP_COMMAND_REGISTRATION: "Skipping command registration.",
 	DEBUG_INIT_SERVICE_START: "Initializing Commands Service...",
