@@ -5,6 +5,7 @@ import initI18n from "./core/i18n";
 import logger from "./core/logger";
 import logMessages from "./core/logger/messages";
 import CommandsService from "./core/services/commands.service";
+import prismaClient from "./shared/data/prisma";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -45,12 +46,14 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 
 process.on("SIGINT", () => {
 	logger.info(logMessages.INFO_BOT_SHUTDOWN);
+	prismaClient.$disconnect();
 	client.destroy();
 	process.exit(0);
 });
 
 process.on("SIGTERM", () => {
 	logger.info(logMessages.INFO_BOT_SHUTDOWN);
+	prismaClient.$disconnect();
 	client.destroy();
 	process.exit(0);
 });
