@@ -12,6 +12,10 @@ const resources = {
 	},
 };
 
+/**
+ * Initializes i18next with the provided resources and configuration.
+ */
+
 export default async function initI18n() {
 	await init({
 		resources,
