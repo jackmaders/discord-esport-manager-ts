@@ -33,8 +33,11 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
-# Copy only the bundled code from the build stage
+# Copy the bundled code from the build stage
 COPY --from=build /app/dist /app/dist
+
+# Need to copy the Prisma client generated in the build stage
+COPY --from=build /app/src/generated/prisma/ /app/src/generated/prisma
 
 # Run the bundled application
 # Bun can directly execute the JS file
