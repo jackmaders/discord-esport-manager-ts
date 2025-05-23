@@ -1,9 +1,11 @@
 app = 'discord-esport-manager-ts'
 primary_region = 'lhr'
 
+[deploy]
+  release_command = "bunx prisma migrate deploy"
+
 [processes]
   app = "bun dist/index.js"
-
 
 [[vm]]
   memory = '256mb'
