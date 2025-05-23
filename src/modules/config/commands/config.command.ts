@@ -4,6 +4,7 @@ import {
 	ChannelType,
 	type ChatInputCommandInteraction,
 	InteractionContextType,
+	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
@@ -13,6 +14,7 @@ const command = {
 	data: new SlashCommandBuilder()
 		.setName("admin")
 		.setDescription("Configure the bot")
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild])
 		.addSubcommandGroup((group) =>

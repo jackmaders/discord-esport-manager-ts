@@ -3,6 +3,7 @@ import {
 	type CacheType,
 	type ChatInputCommandInteraction,
 	InteractionContextType,
+	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
@@ -12,6 +13,7 @@ const command = {
 	data: new SlashCommandBuilder()
 		.setName("availability")
 		.setDescription("Manage the availability of a team")
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild])
 		.addSubcommand((subcommand) =>
