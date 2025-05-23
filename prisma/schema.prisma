@@ -4,7 +4,6 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
-
 }
 
 datasource db {
@@ -12,9 +11,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// temporary model to generate a client
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model GuildConfiguration {
+  id                    String  @id @unique
+  availabilityChannelId String?
+
+  @@map("guild_configurations")
 }

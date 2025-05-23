@@ -4,30 +4,25 @@ import {
 	MessageFlags,
 } from "discord.js";
 import { t } from "i18next";
-import client from "../../../core/client";
 import { GuildOnlyError } from "../../../shared/errors/GuildOnlyError";
 import guildConfigurationRepository from "../../../shared/repositories/guild-configuration.repository";
-import sendAvailabilityPoll from "../ui/availability-poll.ui";
 
-async function handleAvailabilityQuery(
+async function handleConfigChannelSetAvailability(
 	interaction: ChatInputCommandInteraction<CacheType>,
 ) {
 	if (!interaction.guildId) throw new GuildOnlyError(interaction.commandName);
 
-	const channelId = await guildConfigurationRepository.getAvailabilityChannelId(
+	const channel = interaction.options.getChannel("channel", true);
+
+	await guildConfigurationRepository.setAvailabilityChannelId(
 		interaction.guildId,
+		channel.id,
 	);
 
-	const channel = await client.channels.fetch(channelId ?? "");
-
-	if (!channel?.isTextBased()) return;
-
-	await sendAvailabilityPoll(channel);
-
 	await interaction.reply({
-		content: t("availability:pollCreated"),
+		content: t("config:availabilityChannelSet"),
 		flags: [MessageFlags.Ephemeral],
 	});
 }
 
-export default handleAvailabilityQuery;
+export default handleConfigChannelSetAvailability;
