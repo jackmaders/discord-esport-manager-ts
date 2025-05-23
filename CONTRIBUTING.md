@@ -117,3 +117,19 @@ await interaction.reply({
   | Warn  | Undesirable situation, but the bot is able to continue execution.      |
   | Error | Undesirable situation; the bot cannot continue the specific operation. |
   | Fatal | Fatal error in core bot functionality, potentially requiring shutdown. |
+
+### Module Structure
+
+Each distinct feature or command group of the bot resides in its own directory under `src/modules/`.
+
+Any code, utilities, type definitions, or configurations that are not specific to a single feature module and are intended to be used across multiple modules or by the core application should be placed in the `src/shared/` directory.
+
+Within each feature module directory, the following subdirectories are conventionally used to organize its components. While not all subdirectories are mandatory for every module, this structure is encouraged for consistency and scalability:
+
+- `commands/`: Defines each of the the feature's slash commands and links to the corresponding handler (`<command-name>.command.ts`).
+- `handlers/`: Contains the core implementation logic for each command, calling necessary services and triggering a response (`<command-name>.handler.ts`).
+- `services/`: Encapsulates complex business logic that is too extensive for a handler file (`<command-name>.service.ts`).
+- `ui/`: Manages the creation and formatting of user interface elements (`<command-name>.ui.ts`).
+- `clients/`: Handles interactions with external APIs or SDKs (`<command-name>.client.ts`).
+- `repositories/`: Abstracts data persistence logic (`<command-name>.repository.ts`).
+- `types/`: Contains TypeScript type definitions, interfaces, or enums (`<command-name>.types.ts`).
