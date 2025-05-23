@@ -1,4 +1,0 @@
-{
-	"pinging": "Pinging...",
-	"pong": "Pong! 🏓\nRound trip latency: {{latency}}ms\nWebSocket heartbeat: {{websocketHeartbeat}}ms"
-}

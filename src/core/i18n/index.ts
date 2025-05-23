@@ -1,16 +1,16 @@
 import { init } from "i18next";
 import logger from "../logger";
 
-import availabilityEn from "../../locales/en/availability.json";
-import commonEn from "../../locales/en/common.json";
-import pingEn from "../../locales/en/ping.json";
+import availability from "../../locales/en/availability.json";
+import common from "../../locales/en/common.json";
+import config from "../../locales/en/config.json";
 import logMessages from "../logger/messages";
 
 const resources = {
 	en: {
-		common: commonEn,
-		availability: availabilityEn,
-		ping: pingEn,
+		common,
+		availability,
+		config,
 	},
 };
 
