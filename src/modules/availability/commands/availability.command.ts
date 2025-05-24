@@ -13,7 +13,7 @@ const command = {
 	data: new SlashCommandBuilder()
 		.setName("availability")
 		.setDescription("Manage the availability of a team")
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild])
 		.addSubcommand((subcommand) =>

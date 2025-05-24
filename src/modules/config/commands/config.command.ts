@@ -16,7 +16,7 @@ const command = {
 	data: new SlashCommandBuilder()
 		.setName("admin")
 		.setDescription("Configure the bot")
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild])
 		.addSubcommandGroup((group) =>
