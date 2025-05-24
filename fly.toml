@@ -1,13 +1,13 @@
 app = 'discord-esport-manager-ts'
 primary_region = 'lhr'
-swap_size_mb = 512
+swap_size_mb = 1024
 
 [[mounts]]
 source = 'bot_data'
 destination = '/data'
 
 [[vm]]
-memory = '256mb'
+memory = 512
 cpu_kind = 'shared'
 cpus = 1
 
