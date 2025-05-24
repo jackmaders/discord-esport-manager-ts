@@ -1,44 +1,33 @@
 # syntax = docker/dockerfile:1
-
-# Define Bun version arg. This will be overridden by --build-arg in CI/CD
 ARG BUN_VERSION=1.2.2
-FROM oven/bun:${BUN_VERSION}-slim AS base
 
 # ---- Build Stage ----
-FROM base AS build
+FROM oven/bun:${BUN_VERSION}-slim AS build
 WORKDIR /app
-
-# Install all dependencies (including devDependencies needed for build)
-COPY package.json bun.lock ./
-# Use --ci for faster installs based on lockfile
-RUN bun install --ci
-
-# Copy the rest of the application code
-# Ensure .dockerignore excludes unnecessary files (.git, .vscode, etc.)
-COPY . .
-
-# Set production environment
 ENV NODE_ENV="production"
 
-# Generate Prisma client
-RUN bunx prisma generate
+COPY package.json bun.lock ./
+RUN bun install --ci
 
-# Build the application, bundling dependencies into ./dist
+COPY . .
+
+RUN bun run prisma:generate
 RUN bun run build
 
 # ---- Final Stage ----
-FROM base
+FROM oven/bun:${BUN_VERSION}-slim
 WORKDIR /app
-
-# Set production environment
 ENV NODE_ENV="production"
 
-# Copy the bundled code from the build stage
-COPY --from=build /app/dist /app/dist
+RUN groupadd --system --gid 1001 appgroup && \
+    useradd --system --uid 1001 --gid appgroup appuser
 
-# Need to copy the Prisma client generated in the build stage
-COPY --from=build /app/src/generated/prisma/ /app/src/generated/prisma
+COPY --from=build --chown=appuser:appgroup /app/dist /app/dist
+COPY --from=build --chown=appuser:appgroup /app/prisma /app/prisma
+COPY --from=build --chown=appuser:appgroup /app/src/generated/prisma /app/src/generated/prisma
+COPY --from=build --chown=appuser:appgroup /app/package.json /app/package.json
 
-# Run the bundled application
-# Bun can directly execute the JS file
-CMD [ "bun", "dist/index.js" ]
+
+USER appuser
+
+CMD [ "bun", "run", "start:migrate" ]
