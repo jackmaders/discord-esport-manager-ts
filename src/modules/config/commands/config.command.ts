@@ -9,6 +9,8 @@ import {
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
 import handleConfigChannelSetAvailability from "../handlers/config-channel-set-availability.handler";
+import handleConfigRoleSetTeamMember from "../handlers/config-role-set-team-member.handler";
+import handleConfigRoleSetTrial from "../handlers/config-role-set-trial.handler";
 
 const command = {
 	data: new SlashCommandBuilder()
@@ -33,6 +35,33 @@ const command = {
 								.setRequired(true),
 						),
 				),
+		)
+		.addSubcommandGroup((group) =>
+			group
+				.setName("set-role")
+				.setDescription("Manage role configurations.")
+				.addSubcommand((subcommand) =>
+					subcommand
+						.setName("team-member")
+						.setDescription("Set the role assigned to team members.")
+						.addRoleOption((option) =>
+							option
+								.setName("role")
+								.setDescription("The role for team members.")
+								.setRequired(true),
+						),
+				)
+				.addSubcommand((subcommand) =>
+					subcommand
+						.setName("trial")
+						.setDescription("Set the role assigned to trial members.")
+						.addRoleOption((option) =>
+							option
+								.setName("role")
+								.setDescription("The role for trial.")
+								.setRequired(true),
+						),
+				),
 		),
 	async execute(interaction: ChatInputCommandInteraction<CacheType>) {
 		const group = interaction.options.getSubcommandGroup();
@@ -43,6 +72,18 @@ const command = {
 				switch (subcommand) {
 					case "availability":
 						await handleConfigChannelSetAvailability(interaction);
+						break;
+					default:
+						throw new CommandNotFoundError(`${group} ${subcommand}`);
+				}
+				break;
+			case "set-role":
+				switch (subcommand) {
+					case "team-member":
+						await handleConfigRoleSetTeamMember(interaction);
+						break;
+					case "trial":
+						await handleConfigRoleSetTrial(interaction);
 						break;
 					default:
 						throw new CommandNotFoundError(`${group} ${subcommand}`);
