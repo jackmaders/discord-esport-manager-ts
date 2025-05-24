@@ -14,6 +14,8 @@ datasource db {
 model GuildConfiguration {
   id                    String  @id @unique
   availabilityChannelId String?
+  teamMemberRoleId      String?
+  trialRoleId           String?
 
   @@map("guild_configurations")
 }

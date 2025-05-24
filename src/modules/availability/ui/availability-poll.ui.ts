@@ -1,11 +1,21 @@
 import type { SendableChannels, TextBasedChannel } from "discord.js";
 import { t } from "i18next";
+import guildConfigurationRepository from "../../../shared/repositories/guild-configuration.repository";
 import getNextMonday from "../utils/getNextMonday";
 
-async function sendAvailabilityPoll(channel: TextBasedChannel | null) {
+async function sendAvailabilityPoll(
+	channel: TextBasedChannel | null,
+	guildId: string,
+) {
 	if (!channel?.isSendable()) return;
 
 	const nextMonday = getNextMonday();
+
+	const config =
+		await guildConfigurationRepository.getGuildConfiguration(guildId);
+
+	const teamMemberRoleId = config?.teamMemberRoleId;
+	const trialRoleId = config?.trialRoleId;
 
 	const answers = new Array(7).fill(null).map((_, index) => {
 		const date = new Date(nextMonday);
@@ -33,6 +43,7 @@ async function sendAvailabilityPoll(channel: TextBasedChannel | null) {
 	const durationHours = Math.floor(durationMilliseconds / (1000 * 60 * 60));
 
 	await channel.send({
+		content: `<@&${teamMemberRoleId}> <@&${trialRoleId}>`,
 		poll: {
 			question: {
 				text: t("availability:pollHeading", { date: nextMondayFormatted }),
