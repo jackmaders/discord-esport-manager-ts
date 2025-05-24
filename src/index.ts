@@ -5,6 +5,7 @@ import initI18n from "./core/i18n";
 import logger from "./core/logger";
 import logMessages from "./core/logger/messages";
 import CommandsService from "./core/services/commands.service";
+import SchedulerService from "./core/services/scheduler.service";
 import prismaClient from "./shared/data/prisma";
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -24,6 +25,9 @@ const GUILD_ID = process.env.DISCORD_GUILD_ID;
 
 		const commandsService = new CommandsService(BOT_TOKEN, CLIENT_ID, GUILD_ID);
 		await commandsService.init();
+
+		const schedulerService = new SchedulerService();
+		await schedulerService.init();
 
 		client.on(Events.Error, logger.error);
 		client.on(Events.Warn, logger.warn);
