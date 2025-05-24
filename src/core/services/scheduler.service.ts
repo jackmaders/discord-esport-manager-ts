@@ -9,7 +9,7 @@ export default class SchedulerService {
 	}
 
 	private scheduleWeeklyAvailabilityPoll() {
-		new Cron("0 9 * * 5", { name: "Weekly Availability Poll" }, async () => {
+		new Cron("0 18 * * 5", { name: "Weekly Availability Poll" }, async () => {
 			const guildsToPoll = await prismaClient.guildConfiguration.findMany({
 				where: {
 					availabilityChannelId: {
