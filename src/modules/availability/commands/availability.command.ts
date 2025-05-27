@@ -9,7 +9,7 @@ import {
 import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
 import handleAvailabilityQuery from "../handlers/availability-query.handler";
 
-const command = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName("availability")
 		.setDescription("Manage the availability of a team")
@@ -33,5 +33,3 @@ const command = {
 		}
 	},
 };
-
-export default command;

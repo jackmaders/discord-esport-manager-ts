@@ -12,4 +12,4 @@ cpu_kind = 'shared'
 cpus = 1
 
 [env]
-DATABASE_URL = 'file:/data/db.sqlite'
+PRISMA_DATABASE_URL = 'file:/data/db.sqlite'

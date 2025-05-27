@@ -1,4 +1,4 @@
-import prismaClient from "../data/prisma";
+import prismaClient from "../clients/prisma";
 
 async function getGuildConfiguration(guildId: string) {
 	return prismaClient.guildConfiguration.findUnique({

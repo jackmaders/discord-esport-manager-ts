@@ -24,7 +24,6 @@ RUN groupadd --system --gid 1001 appgroup && \
 
 COPY --from=build --chown=appuser:appgroup /app/dist /app/dist
 COPY --from=build --chown=appuser:appgroup /app/prisma /app/prisma
-COPY --from=build --chown=appuser:appgroup /app/src/generated/prisma /app/src/generated/prisma
 COPY --from=build --chown=appuser:appgroup /app/package.json /app/package.json
 
 
