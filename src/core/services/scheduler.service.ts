@@ -1,36 +1,21 @@
 import { Cron } from "croner";
-import sendAvailabilityPoll from "../../modules/availability/ui/availability-poll.ui";
-import prismaClient from "../../shared/data/prisma";
-import client from "../client";
+import schedules from "../registries/schedules";
 
-export default class SchedulerService {
-	public init() {
-		this.scheduleWeeklyAvailabilityPoll();
+class SchedulerService {
+	private static instance: SchedulerService;
+
+	private constructor() {}
+
+	async initialise() {
+		for (const schedule of schedules) {
+			new Cron(schedule.pattern, { name: schedule.name }, schedule.execute);
+		}
 	}
 
-	private scheduleWeeklyAvailabilityPoll() {
-		new Cron("0 18 * * 5", { name: "Weekly Availability Poll" }, async () => {
-			const guildsToPoll = await prismaClient.guildConfiguration.findMany({
-				where: {
-					availabilityChannelId: {
-						not: null,
-					},
-				},
-			});
-
-			if (guildsToPoll.length === 0) return;
-
-			for (const config of guildsToPoll) {
-				if (!config.availabilityChannelId) continue;
-
-				const channel = await client.channels.fetch(
-					config.availabilityChannelId,
-				);
-
-				if (!channel?.isTextBased()) return;
-
-				await sendAvailabilityPoll(channel, config.id);
-			}
-		});
+	public static getInstance() {
+		SchedulerService.instance ||= new SchedulerService();
+		return SchedulerService.instance;
 	}
 }
+
+export default SchedulerService.getInstance();

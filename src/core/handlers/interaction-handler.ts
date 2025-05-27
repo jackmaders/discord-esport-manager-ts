@@ -2,23 +2,20 @@ import {
 	type Interaction,
 	type InteractionReplyOptions,
 	MessageFlags,
-	type MessagePayload,
 } from "discord.js";
 import { t } from "i18next";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import logger from "../logger";
-import logMessages from "../logger/messages";
-import type CommandsService from "../services/commands.service";
 
-async function handleInteraction(
-	interaction: Interaction,
-	commandsService: CommandsService,
-) {
+import logMessages from "../constants/log-messages";
+import commandsService from "../services/commands.service";
+import loggerService from "../services/logger.service";
+
+async function handleInteraction(interaction: Interaction) {
 	if (!interaction.isChatInputCommand()) return;
 	try {
 		await commandsService.handleInteraction(interaction);
 	} catch (error) {
-		logger.error(
+		loggerService.error(
 			error,
 			logMessages.ERROR_HANDLE_INTERACTION,
 			interaction.commandName,
@@ -27,7 +24,7 @@ async function handleInteraction(
 		let content = t("common:errorOccurred");
 
 		if (!interaction.isRepliable()) {
-			logger.warn(logMessages.WARN_INTERACTION_NOT_REPLIABLE);
+			loggerService.warn(logMessages.WARN_INTERACTION_NOT_REPLIABLE);
 			return;
 		}
 
@@ -35,7 +32,7 @@ async function handleInteraction(
 			content = t("common:errorCommandNotFound", {
 				commandName: error.commandName,
 			});
-			logger.warn(logMessages.WARN_COMMAND_NOT_FOUND, error.commandName);
+			loggerService.warn(logMessages.WARN_COMMAND_NOT_FOUND, error.commandName);
 		}
 
 		replyToInteraction(interaction, content);

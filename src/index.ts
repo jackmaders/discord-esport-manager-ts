@@ -1,63 +1,36 @@
 import { Events } from "discord.js";
-import client from "./core/client";
-import handleInteraction from "./core/handlers/interaction-handler";
-import initI18n from "./core/i18n";
-import logger from "./core/logger";
-import logMessages from "./core/logger/messages";
-import CommandsService from "./core/services/commands.service";
-import SchedulerService from "./core/services/scheduler.service";
-import prismaClient from "./shared/data/prisma";
-
-const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const GUILD_ID = process.env.DISCORD_GUILD_ID;
+import discordClient from "./core/clients/discord.client";
+import environment from "./core/config/environment";
+import logMessages from "./core/constants/log-messages";
+import commandsService from "./core/services/commands.service";
+import loggerService from "./core/services/logger.service";
+import schedulerService from "./core/services/scheduler.service";
+import translationService from "./core/services/translation.service";
+import exitProcess from "./core/utils/exit-process";
 
 (async () => {
-	if (!BOT_TOKEN)
-		throw new Error("Missing required environment variable: DISCORD_BOT_TOKEN");
-	if (!CLIENT_ID)
-		throw new Error("Missing required environment variable: DISCORD_CLIENT_ID");
-
 	try {
-		logger.info(logMessages.INFO_BOT_START);
+		await loggerService.initialise();
+		await schedulerService.initialise();
+		await translationService.initialise();
+		await commandsService.initialise();
 
-		await initI18n();
-
-		const commandsService = new CommandsService(BOT_TOKEN, CLIENT_ID, GUILD_ID);
-		await commandsService.init();
-
-		const schedulerService = new SchedulerService();
-		await schedulerService.init();
-
-		client.on(Events.Error, logger.error);
-		client.on(Events.Warn, logger.warn);
-
-		client.on(Events.InteractionCreate, (interaction) =>
-			handleInteraction(interaction, commandsService),
+		discordClient.on(Events.Error, (error) => loggerService.error(error));
+		discordClient.on(Events.Warn, (message) => loggerService.warn(message));
+		discordClient.on(Events.InteractionCreate, (interaction) =>
+			commandsService.handleInteraction(interaction),
+		);
+		discordClient.once(Events.ClientReady, () =>
+			loggerService.info(logMessages.INFO_BOT_READY),
 		);
 
-		client.once(Events.ClientReady, () =>
-			logger.info(logMessages.INFO_BOT_READY),
-		);
-
-		await client.login(BOT_TOKEN);
-		logger.info(logMessages.INFO_BOT_LOGIN, client.user?.tag);
+		await discordClient.login(environment.DISCORD_BOT_TOKEN);
+		loggerService.info(logMessages.INFO_BOT_LOGIN, discordClient.user?.tag);
 	} catch (error) {
-		logger.error(error);
-		process.exit(1);
+		console.error(error);
+		exitProcess(1);
 	}
 })();
 
-process.on("SIGINT", () => {
-	logger.info(logMessages.INFO_BOT_SHUTDOWN);
-	prismaClient.$disconnect();
-	client.destroy();
-	process.exit(0);
-});
-
-process.on("SIGTERM", () => {
-	logger.info(logMessages.INFO_BOT_SHUTDOWN);
-	prismaClient.$disconnect();
-	client.destroy();
-	process.exit(0);
-});
+process.on("SIGINT", () => exitProcess(0));
+process.on("SIGTERM", () => exitProcess(0));
