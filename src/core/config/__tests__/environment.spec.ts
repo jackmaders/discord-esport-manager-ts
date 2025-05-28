@@ -1,9 +1,12 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 
 describe("environment.ts", () => {
 	afterEach(() => {
-		vi.unstubAllEnvs();
 		vi.resetModules();
+	});
+
+	afterAll(() => {
+		vi.unstubAllEnvs();
 	});
 
 	it("should export the environment variables", async () => {

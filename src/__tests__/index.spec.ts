@@ -11,7 +11,6 @@ import exitProcess from "../core/utils/exit-process";
 describe("index.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
-		vi.resetAllMocks();
 	});
 
 	afterAll(() => {
@@ -150,7 +149,7 @@ describe("index.ts", () => {
 	});
 });
 
-vi.mock("../core/services/commands.service");
+vi.mock("../core/services/command.service");
 vi.mock("../core/services/logger.service");
 vi.mock("../core/services/scheduler.service");
 vi.mock("../core/services/translation.service");

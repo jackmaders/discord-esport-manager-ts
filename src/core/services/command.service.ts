@@ -12,20 +12,15 @@ import getCommands, { type SlashCommand } from "../registries/get-commands";
 import LoggerService from "./logger.service";
 
 class CommandsService {
-	private commands = new Collection<string, SlashCommand>();
+	private commands = new Map<string, SlashCommand>();
 	private rest: REST;
 	private readonly token: string;
 	private readonly clientId: string;
-	private readonly guildId?: string;
 	private static instance: CommandsService;
 
-	private constructor(token?: string, clientId?: string, guildId?: string) {
-		if (!token) throw new Error("CommandsService requires a bot token.");
-		if (!clientId) throw new Error("CommandsService requires a client ID.");
-
+	private constructor(token: string, clientId: string) {
 		this.token = token;
 		this.clientId = clientId;
-		this.guildId = guildId;
 		this.rest = new REST({ version: "10" }).setToken(this.token);
 	}
 
@@ -92,20 +87,17 @@ class CommandsService {
 			);
 			if (this.commands.size === 0) return;
 
-			const commandsData = this.commands.map((cmd) => cmd.data.toJSON());
+			const commandsData = this.commands
+				.entries()
+				.map((cmd) => cmd[1].data.toJSON());
 
-			if (this.guildId) {
-				await this.rest.put(
-					Routes.applicationGuildCommands(this.clientId, this.guildId),
-					{ body: commandsData },
-				);
-			} else {
-				await this.rest.put(Routes.applicationCommands(this.clientId), {
-					body: commandsData,
-				});
-			}
+			await this.rest.put(Routes.applicationCommands(this.clientId), {
+				body: commandsData,
+			});
 			LoggerService.debug(logMessages.DEBUG_REGISTER_COMMANDS_END);
 		} catch (error) {
+			console.log(error);
+
 			LoggerService.error(error, logMessages.ERROR_REGISTER_COMMANDS);
 		}
 	}
@@ -130,12 +122,8 @@ class CommandsService {
 		LoggerService.debug(logMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
 	}
 
-	public static getInstance(
-		token?: string,
-		clientId?: string,
-		guildId?: string,
-	) {
-		CommandsService.instance ||= new CommandsService(token, clientId, guildId);
+	public static getInstance(token: string, clientId: string) {
+		CommandsService.instance ||= new CommandsService(token, clientId);
 		return CommandsService.instance;
 	}
 }
