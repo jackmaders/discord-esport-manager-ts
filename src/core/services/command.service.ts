@@ -6,10 +6,9 @@ import {
 	Routes,
 } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import MissingEnvVarError from "../../shared/errors/MissingEnvVarError";
-import environment from "../config/environment";
+import getEnvironmentVariables from "../config/get-environment-variables";
 import logMessages from "../constants/log-messages";
-import slashCommands, { type SlashCommand } from "../registries/commands";
+import getCommands, { type SlashCommand } from "../registries/get-commands";
 import LoggerService from "./logger.service";
 
 class CommandsService {
@@ -49,7 +48,7 @@ class CommandsService {
 		LoggerService.debug(logMessages.DEBUG_LOAD_MODULES_START);
 		this.commands.clear();
 
-		for (const command of slashCommands) {
+		for (const command of getCommands()) {
 			if (!command?.data?.name || typeof command.execute !== "function") {
 				LoggerService.warn(
 					logMessages.WARN_COMMAND_FILE_INVALID,
@@ -82,7 +81,7 @@ class CommandsService {
 	 */
 	private async registerCommands() {
 		try {
-			if (environment.SKIP_COMMAND_REGISTRATION) {
+			if (getEnvironmentVariables().SKIP_COMMAND_REGISTRATION) {
 				LoggerService.info(logMessages.INFO_SKIP_COMMAND_REGISTRATION);
 				return;
 			}
@@ -141,7 +140,9 @@ class CommandsService {
 	}
 }
 
+const { DISCORD_BOT_TOKEN, DISCORD_CLIENT_ID } = getEnvironmentVariables();
+
 export default CommandsService.getInstance(
-	environment.DISCORD_BOT_TOKEN,
-	environment.DISCORD_CLIENT_ID,
+	DISCORD_BOT_TOKEN,
+	DISCORD_CLIENT_ID,
 );

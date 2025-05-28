@@ -1,8 +1,8 @@
 import { Events } from "discord.js";
 import discordClient from "./core/clients/discord.client";
-import environment from "./core/config/environment";
+import getEnvironmentVariables from "./core/config/get-environment-variables";
 import logMessages from "./core/constants/log-messages";
-import commandsService from "./core/services/commands.service";
+import commandsService from "./core/services/command.service";
 import loggerService from "./core/services/logger.service";
 import schedulerService from "./core/services/scheduler.service";
 import translationService from "./core/services/translation.service";
@@ -24,7 +24,7 @@ import exitProcess from "./core/utils/exit-process";
 			loggerService.info(logMessages.INFO_BOT_READY),
 		);
 
-		await discordClient.login(environment.DISCORD_BOT_TOKEN);
+		await discordClient.login(getEnvironmentVariables().DISCORD_BOT_TOKEN);
 		loggerService.info(logMessages.INFO_BOT_LOGIN, discordClient.user?.tag);
 	} catch (error) {
 		console.error(error);

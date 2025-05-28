@@ -1,5 +1,6 @@
 import { Cron } from "croner";
-import schedules from "../registries/schedules";
+import schedules from "../registries/get-schedules";
+import getSchedules from "../registries/get-schedules";
 
 class SchedulerService {
 	private static instance: SchedulerService;
@@ -7,7 +8,7 @@ class SchedulerService {
 	private constructor() {}
 
 	async initialise() {
-		for (const schedule of schedules) {
+		for (const schedule of getSchedules()) {
 			new Cron(schedule.pattern, { name: schedule.name }, schedule.execute);
 		}
 	}

@@ -2,7 +2,7 @@ import { type ClientUser, Events } from "discord.js";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import discordClient from "../core/clients/discord.client";
 import logMessages from "../core/constants/log-messages";
-import commandsService from "../core/services/commands.service";
+import commandsService from "../core/services/command.service";
 import loggerService from "../core/services/logger.service";
 import schedulerService from "../core/services/scheduler.service";
 import translationService from "../core/services/translation.service";

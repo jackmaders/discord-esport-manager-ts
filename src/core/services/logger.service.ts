@@ -1,10 +1,5 @@
 import pino, { type Logger, type LoggerOptions } from "pino";
-import environment from "../config/environment";
-
-const IS_PRODUCTION = environment.NODE_ENV === "production";
-const IS_DEVELOPMENT_TTY = !IS_PRODUCTION && process.stdout.isTTY;
-const PINO_LOG_LEVEL =
-	environment.PINO_LOG_LEVEL ?? (IS_PRODUCTION ? "info" : "debug");
+import getEnvironmentVariables from "../config/get-environment-variables";
 
 const DEV_OPTIONS: Partial<LoggerOptions> = {
 	transport: {
@@ -29,6 +24,11 @@ class LoggerService {
 	private constructor() {}
 
 	public async initialise() {
+		const { NODE_ENV, PINO_LOG_LEVEL } = getEnvironmentVariables();
+
+		const IS_PRODUCTION = NODE_ENV === "production";
+		const IS_DEVELOPMENT_TTY = !IS_PRODUCTION && process.stdout.isTTY;
+
 		const options: LoggerOptions = {
 			level: PINO_LOG_LEVEL,
 			timestamp: pino.stdTimeFunctions.isoTime,

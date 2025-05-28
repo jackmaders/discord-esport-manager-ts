@@ -8,8 +8,6 @@ import type {
 import availabilityCommand from "../../modules/availability/commands/availability.command";
 import configCommand from "../../modules/config/commands/config.command";
 
-export default [availabilityCommand, configCommand] as SlashCommand[];
-
 export interface SlashCommand {
 	data:
 		| SlashCommandBuilder
@@ -20,3 +18,9 @@ export interface SlashCommand {
 		interaction: ChatInputCommandInteraction<CacheType>,
 	) => Promise<void>;
 }
+
+function getCommands(): SlashCommand[] {
+	return [availabilityCommand, configCommand];
+}
+
+export default getCommands;

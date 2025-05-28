@@ -1,5 +1,5 @@
 import { PrismaClient } from "../../../prisma/generated/prisma-client-js";
-import environment from "../../core/config/environment";
+import getEnvironmentVariables from "../../core/config/get-environment-variables";
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -10,6 +10,7 @@ declare global {
 
 const prismaClient = global.prisma ?? new PrismaClient({});
 
-if (environment.NODE_ENV !== "production") global.prisma = prismaClient;
+if (getEnvironmentVariables().NODE_ENV !== "production")
+	global.prisma = prismaClient;
 
 export default prismaClient;

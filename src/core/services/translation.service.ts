@@ -1,5 +1,6 @@
 import { init } from "i18next";
-import locales from "../registries/locales";
+
+import getLocales from "../registries/get-locales";
 
 class TranslationService {
 	private static instance: TranslationService;
@@ -7,6 +8,8 @@ class TranslationService {
 	private constructor() {}
 
 	async initialise() {
+		const locales = getLocales();
+
 		await init({
 			resources: locales,
 			lng: "en",
