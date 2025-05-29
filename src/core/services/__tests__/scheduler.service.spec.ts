@@ -16,6 +16,15 @@ describe("scheduler.service.ts", () => {
 		expect(typeof schedulerService).toBe("object");
 	});
 
+	it("should return the same instance when imported twice", async () => {
+		// Act
+		const schedulerService1 = (await import("../scheduler.service")).default;
+		const schedulerService2 = (await import("../scheduler.service")).default;
+
+		// Assert
+		expect(schedulerService1).toBe(schedulerService2);
+	});
+
 	it("should correctly initialise the schedules", async () => {
 		const ONE_HOUR_MS = 3600000;
 

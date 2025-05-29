@@ -16,6 +16,15 @@ describe("command.service.ts", () => {
 		expect(typeof commandService).toBe("object");
 	});
 
+	it("should return the same instance when imported twice", async () => {
+		// Act
+		const commandService1 = (await import("../command.service")).default;
+		const commandService2 = (await import("../command.service")).default;
+
+		// Assert
+		expect(commandService1).toBe(commandService2);
+	});
+
 	it("should initialise REST client on import", async () => {
 		// Arrange
 		const { REST } = await import("discord.js");
@@ -25,15 +34,6 @@ describe("command.service.ts", () => {
 
 		// Assert
 		expect(REST).toHaveBeenCalledWith({ version: "10" });
-	});
-
-	it("should return the same instance when imported twice", async () => {
-		// Act
-		const commandService1 = (await import("../command.service")).default;
-		const commandService2 = (await import("../command.service")).default;
-
-		// Assert
-		expect(commandService1).toBe(commandService2);
 	});
 
 	it("should return a warning if no modules are loaded", async () => {

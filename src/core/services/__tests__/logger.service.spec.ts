@@ -15,6 +15,15 @@ describe("logger.service.ts", () => {
 		expect(typeof loggerService).toBe("object");
 	});
 
+	it("should return the same instance when imported twice", async () => {
+		// Act
+		const loggerService1 = (await import("../logger.service")).default;
+		const loggerService2 = (await import("../logger.service")).default;
+
+		// Assert
+		expect(loggerService1).toBe(loggerService2);
+	});
+
 	it("should handle if logging methods are called before initialisation", async () => {
 		// Arrange
 		vi.spyOn(console, "debug").mockImplementation(vi.fn());
