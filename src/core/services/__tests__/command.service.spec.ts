@@ -1,17 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { set } from "zod/v4";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import logMessages from "../../constants/log-messages";
 
 describe("command.service.ts", () => {
-	beforeEach(() => {
-		vi.resetModules();
-	});
-
 	afterEach(() => {
+		vi.resetModules();
 		vi.unstubAllEnvs();
 	});
 
-	it("should export a CommandService class", async () => {
+	it("should export a CommandService instance", async () => {
 		// Act
 		const commandService = (await import("../command.service")).default;
 
@@ -37,7 +33,7 @@ describe("command.service.ts", () => {
 		const commandService2 = (await import("../command.service")).default;
 
 		// Assert
-		expect(commandService1).toStrictEqual(commandService2);
+		expect(commandService1).toBe(commandService2);
 	});
 
 	it("should return a warning if no modules are loaded", async () => {
@@ -51,10 +47,6 @@ describe("command.service.ts", () => {
 		await commandService.initialise();
 
 		// Assert
-		expect(loggerService.warn).toHaveBeenCalledWith(
-			logMessages.WARN_NO_COMMANDS_RECOGNISED,
-		);
-
 		expect(loggerService.warn).toHaveBeenCalledWith(
 			logMessages.WARN_NO_COMMANDS_RECOGNISED,
 		);

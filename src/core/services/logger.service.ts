@@ -16,23 +16,21 @@ class LoggerService {
 	private static instance: LoggerService;
 	public initialised = false;
 	private logger: Logger = pino();
-	public debug: Logger["debug"] = () => {};
-	public info: Logger["info"] = () => {};
-	public error: Logger["error"] = () => {};
-	public warn: Logger["warn"] = () => {};
-
+	public debug: Logger["debug"] = console.debug;
+	public info: Logger["info"] = console.info;
+	public error: Logger["error"] = console.error;
+	public warn: Logger["warn"] = console.warn;
 	private constructor() {}
 
 	public async initialise() {
 		const { NODE_ENV, PINO_LOG_LEVEL } = getEnvironmentVariables();
 
 		const IS_PRODUCTION = NODE_ENV === "production";
-		const IS_DEVELOPMENT_TTY = !IS_PRODUCTION && process.stdout.isTTY;
 
 		const options: LoggerOptions = {
 			level: PINO_LOG_LEVEL,
 			timestamp: pino.stdTimeFunctions.isoTime,
-			...(!IS_PRODUCTION && IS_DEVELOPMENT_TTY ? DEV_OPTIONS : {}),
+			...(!IS_PRODUCTION ? DEV_OPTIONS : {}),
 		};
 
 		this.logger = pino(options);
