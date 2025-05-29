@@ -1,10 +1,4 @@
-import {
-	type CacheType,
-	Collection,
-	type Interaction,
-	REST,
-	Routes,
-} from "discord.js";
+import { type CacheType, type Interaction, REST, Routes } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
 import getEnvironmentVariables from "../config/get-environment-variables";
 import logMessages from "../constants/log-messages";
@@ -113,6 +107,9 @@ class CommandsService {
 		LoggerService.debug(logMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
 	}
 
+	/**
+	 * Retrieves the instance of the service.
+	 */
 	public static getInstance(token: string, clientId: string) {
 		CommandsService.instance ||= new CommandsService(token, clientId);
 		return CommandsService.instance;
