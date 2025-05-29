@@ -1,5 +1,4 @@
 import { Cron } from "croner";
-import schedules from "../registries/get-schedules";
 import getSchedules from "../registries/get-schedules";
 
 class SchedulerService {

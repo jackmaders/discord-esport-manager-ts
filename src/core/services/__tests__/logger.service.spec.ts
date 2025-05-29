@@ -43,7 +43,7 @@ describe("logger.service.ts", () => {
 		const loggerService = (await import("../logger.service")).default;
 
 		// Act
-		loggerService.initialise();
+		await loggerService.initialise();
 		loggerService.debug("debug");
 		loggerService.info("info");
 		loggerService.warn("warn");
@@ -67,7 +67,7 @@ describe("logger.service.ts", () => {
 		const loggerService = (await import("../logger.service")).default;
 
 		// Act
-		loggerService.initialise();
+		await loggerService.initialise();
 		loggerService.debug("debug");
 		loggerService.info("info");
 		loggerService.warn("warn");

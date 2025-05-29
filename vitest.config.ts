@@ -1,4 +1,3 @@
-// vitest.config.ts (or vite.config.ts)
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -11,6 +10,9 @@ export default defineConfig({
 			PINO_LOG_LEVEL: "info",
 			PRISMA_DATABASE_URL: "file:./dev.db",
 			SKIP_COMMAND_REGISTRATION: "false",
+		},
+		coverage: {
+			exclude: ["prisma/generated", "*.config.ts"],
 		},
 	},
 });
