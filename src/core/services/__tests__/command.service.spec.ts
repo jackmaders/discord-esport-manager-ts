@@ -1,191 +1,214 @@
-import { REST, Routes } from "discord.js";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { set } from "zod/v4";
 import logMessages from "../../constants/log-messages";
-import getCommands from "../../registries/get-commands";
-import loggerService from "../logger.service";
 
 describe("command.service.ts", () => {
 	beforeEach(() => {
 		vi.resetModules();
 	});
 
-	afterAll(() => {
+	afterEach(() => {
 		vi.unstubAllEnvs();
 	});
 
 	it("should export a CommandService class", async () => {
-		const { default: commandService } = await import("../command.service");
+		// Act
+		const commandService = (await import("../command.service")).default;
 
+		// Assert
 		expect(commandService).toBeDefined();
 		expect(typeof commandService).toBe("object");
 	});
 
-	it("should return the same instance when imported twice", async () => {
-		const { default: service } = await import("../command.service");
+	it("should initialise REST client on import", async () => {
+		// Arrange
+		const { REST } = await import("discord.js");
 
-		expect((await import("../command.service")).default).toStrictEqual(service);
+		// Act
+		await import("../command.service");
+
+		// Assert
+		expect(REST).toHaveBeenCalledWith({ version: "10" });
+	});
+
+	it("should return the same instance when imported twice", async () => {
+		// Act
+		const commandService1 = (await import("../command.service")).default;
+		const commandService2 = (await import("../command.service")).default;
+
+		// Assert
+		expect(commandService1).toStrictEqual(commandService2);
+	});
+
+	it("should return a warning if no modules are loaded", async () => {
+		// Arrange
+		const loggerService = (await import("../logger.service")).default;
+		const getCommands = (await import("../../registries/get-commands")).default;
+		vi.mocked(getCommands).mockReturnValue([]);
+
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+
+		// Assert
+		expect(loggerService.warn).toHaveBeenCalledWith(
+			logMessages.WARN_NO_COMMANDS_RECOGNISED,
+		);
+
+		expect(loggerService.warn).toHaveBeenCalledWith(
+			logMessages.WARN_NO_COMMANDS_RECOGNISED,
+		);
 	});
 
 	it("should load modules on initialisation", async () => {
-		await (await import("../command.service")).default.initialise();
+		// Arrange
+		const loggerService = (await import("../logger.service")).default;
+		const getCommands = (await import("../../registries/get-commands")).default;
 
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_START,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_START,
-		);
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+
+		// Assert
 		expect(loggerService.debug).toHaveBeenCalledWith(
 			logMessages.DEBUG_LOAD_COMMAND_FILE_END,
 			getCommands()[0].data.name,
 		);
 		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_END,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_END,
-		);
-	});
-
-	it("should return a warning if no modules are loaded", async () => {
-		vi.mocked(getCommands).mockReturnValue([]);
-
-		await (await import("../command.service")).default.initialise();
-
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_START,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_START,
-		);
-		expect(loggerService.warn).toHaveBeenCalledWith(
-			logMessages.WARN_NO_COMMANDS_RECOGNISED,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_END,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_END,
+			logMessages.DEBUG_LOAD_COMMAND_FILE_END,
+			getCommands()[1].data.name,
 		);
 	});
 
 	it("should return a warning if duplicate modules are loaded", async () => {
-		const commands = getCommands();
-		vi.mocked(getCommands).mockReturnValue([commands[0], commands[0]]);
+		// Arrange
+		const loggerService = (await import("../logger.service")).default;
+		const getCommands = (await import("../../registries/get-commands")).default;
+		vi.mocked(getCommands).mockReturnValue([
+			getCommands()[0],
+			getCommands()[0],
+		]);
 
-		await (await import("../command.service")).default.initialise();
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
 
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_START,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_START,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_COMMAND_FILE_END,
+		// Assert
+		expect(loggerService.warn).toHaveBeenCalledWith(
+			logMessages.WARN_COMMAND_ALREADY_REGISTERED,
 			getCommands()[0].data.name,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_LOAD_MODULES_END,
-		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_END,
 		);
 	});
 
 	it("should register commands on initialisation", async () => {
-		await (await import("../command.service")).default.initialise();
+		// Arrange
+		const loggerService = (await import("../logger.service")).default;
 
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_START,
-		);
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+
+		// Assert
 		expect(loggerService.debug).toHaveBeenCalledWith(
 			logMessages.DEBUG_REGISTER_COMMANDS_START,
 			2,
 		);
-
 		expect(loggerService.debug).toHaveBeenCalledWith(
 			logMessages.DEBUG_REGISTER_COMMANDS_END,
 		);
-		expect(loggerService.debug).toHaveBeenCalledWith(
-			logMessages.DEBUG_INIT_SERVICE_END,
+	});
+
+	it("should skip command registration if SKIP_COMMAND_REGISTRATION is true", async () => {
+		// Arrange
+		vi.stubEnv("SKIP_COMMAND_REGISTRATION", "true");
+		const loggerService = (await import("../logger.service")).default;
+
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+
+		// Assert
+		expect(loggerService.info).toHaveBeenCalledWith(
+			logMessages.INFO_SKIP_COMMAND_REGISTRATION,
+		);
+		expect(loggerService.debug).not.toHaveBeenCalledWith(
+			logMessages.DEBUG_REGISTER_COMMANDS_START,
+			2,
 		);
 	});
 
-	// it("should skip command registration if SKIP_COMMAND_REGISTRATION is true", async () => {
-	// 	vi.doMock("../../config/environment", () => ({
-	// 		default: { SKIP_COMMAND_REGISTRATION: "true" },
-	// 	}));
-	// 	vi.doMock("../../registries/commands", () => ({
-	// 		default: MOCK_COMMANDS,
-	// 	}));
+	it("should return an error if the commands cannot be registered", async () => {
+		// Arrange
+		const { REST } = await import("discord.js");
+		const error = new Error("API Error");
+		vi.mocked(REST).mockReturnValue({
+			setToken: vi.fn().mockReturnThis(),
+			put: vi.fn().mockRejectedValue(error),
+		} as never);
+		const loggerService = (await import("../logger.service")).default;
 
-	// 	await (await import("../command.service")).default.initialise();
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
 
-	// 	expect(loggerService.info).toHaveBeenCalledWith(
-	// 		logMessages.INFO_SKIP_COMMAND_REGISTRATION,
-	// 	);
-	// 	expect(loggerService.debug).not.toHaveBeenCalledWith(
-	// 		logMessages.DEBUG_REGISTER_COMMANDS_START,
-	// 		MOCK_COMMANDS.length,
-	// 	);
-	// });
+		// Assert
+		expect(loggerService.error).toHaveBeenCalledWith(
+			error,
+			logMessages.ERROR_REGISTER_COMMANDS,
+		);
+	});
 
-	// it("should return a warning if no commands are registered", async () => {
-	// 	vi.doMock("../../registries/commands", () => ({
-	// 		default: [],
-	// 	}));
+	it("should handle an valid interaction", async () => {
+		// Arrange
+		const getCommands = (await import("../../registries/get-commands")).default;
 
-	// 	await (await import("../command.service")).default.initialise();
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+		commandService.handleInteraction({
+			commandName: getCommands()[0].data.name,
+			isChatInputCommand: () => true,
+		} as never);
 
-	// 	expect(loggerService.debug).toHaveBeenCalledWith(
-	// 		logMessages.DEBUG_INIT_SERVICE_START,
-	// 	);
+		// Assert
+		expect(getCommands()[0].execute).toHaveBeenCalled();
+	});
 
-	// 	expect(loggerService.warn).toHaveBeenCalledWith(
-	// 		logMessages.WARN_NO_COMMANDS_RECOGNISED,
-	// 	);
-	// });
+	it("should handle an non chat-input interaction", async () => {
+		// Arrange
+		const getCommands = (await import("../../registries/get-commands")).default;
 
-	// it("should return an error if the commands cannot be registered", async () => {
-	// 	vi.doMock("../../registries/commands", () => ({
-	// 		default: [MOCK_COMMANDS[0], MOCK_COMMANDS[0]],
-	// 	}));
-	// 	const error = new Error("API Error");
-	// 	(REST.prototype.setToken as Mock).mockReturnValue({
-	// 		put: vi.fn().mockRejectedValue(error),
-	// 	});
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+		const result = await commandService.handleInteraction({
+			commandName: getCommands()[0].data.name,
+			isChatInputCommand: () => false,
+		} as never);
 
-	// 	await (await import("../command.service")).default.initialise();
+		// Assert
+		expect(getCommands()[0].execute).not.toHaveBeenCalled();
+		expect(result).toBe(undefined);
+	});
 
-	// 	expect(loggerService.error).toHaveBeenCalledWith(
-	// 		error,
-	// 		logMessages.ERROR_REGISTER_COMMANDS,
-	// 	);
-	// });
+	it("should handle an interaction with an unknown name", async () => {
+		// Arrange
+		const getCommands = (await import("../../registries/get-commands")).default;
+
+		// Act
+		const commandService = (await import("../command.service")).default;
+		await commandService.initialise();
+		const promise = commandService.handleInteraction({
+			commandName: "asdf",
+			isChatInputCommand: () => true,
+		} as never);
+
+		// Assert
+		expect(getCommands()[0].execute).not.toHaveBeenCalled();
+		await expect(promise).rejects.toThrow("asdf");
+	});
 });
 
-vi.mock("discord.js", () => ({
-	REST: vi.fn(() => {
-		return {
-			setToken: vi.fn().mockReturnThis(),
-			put: vi.fn(),
-		};
-	}),
-	Routes: {
-		applicationCommands: vi.fn(),
-	},
-}));
+vi.mock("discord.js");
 vi.mock("../logger.service");
-vi.mock("../../registries/get-commands", () => ({
-	default: vi.fn(() => [
-		{
-			data: { name: "testCommand" },
-			execute: vi.fn(),
-		},
-		{
-			data: { name: "anotherCommand" },
-			execute: vi.fn(),
-		},
-	]),
-}));
+vi.mock("../../registries/get-commands");

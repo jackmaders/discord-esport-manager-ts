@@ -6,8 +6,10 @@ export interface Schedule {
 	execute: () => Promise<void>;
 }
 
+const schedules = [availabilityPollSchedule];
+
 function getSchedules(): Schedule[] {
-	return [availabilityPollSchedule];
+	return schedules;
 }
 
 export default getSchedules;

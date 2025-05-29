@@ -19,8 +19,10 @@ export interface SlashCommand {
 	) => Promise<void>;
 }
 
+const commands = [availabilityCommand, configCommand];
+
 function getCommands(): SlashCommand[] {
-	return [availabilityCommand, configCommand];
+	return commands;
 }
 
 export default getCommands;

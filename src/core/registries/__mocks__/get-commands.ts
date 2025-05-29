@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-export default vi.fn(() => [
+const commands = [
 	{
 		data: {
 			name: "test",
@@ -15,4 +15,6 @@ export default vi.fn(() => [
 		},
 		execute: vi.fn(),
 	},
-]);
+];
+
+export default vi.fn(() => commands);

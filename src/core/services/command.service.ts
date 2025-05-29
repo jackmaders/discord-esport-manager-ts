@@ -12,15 +12,14 @@ import getCommands, { type SlashCommand } from "../registries/get-commands";
 import LoggerService from "./logger.service";
 
 class CommandsService {
+	private static instance: CommandsService;
 	private commands = new Map<string, SlashCommand>();
 	private rest: REST;
-	private readonly token: string;
-	private readonly clientId: string;
-	private static instance: CommandsService;
 
-	private constructor(token: string, clientId: string) {
-		this.token = token;
-		this.clientId = clientId;
+	private constructor(
+		private readonly token: string,
+		private readonly clientId: string,
+	) {
 		this.rest = new REST({ version: "10" }).setToken(this.token);
 	}
 
@@ -44,13 +43,6 @@ class CommandsService {
 		this.commands.clear();
 
 		for (const command of getCommands()) {
-			if (!command?.data?.name || typeof command.execute !== "function") {
-				LoggerService.warn(
-					logMessages.WARN_COMMAND_FILE_INVALID,
-					command?.data?.name || "unknown command",
-				);
-				continue;
-			}
 			if (this.commands.has(command.data.name)) {
 				LoggerService.warn(
 					logMessages.WARN_COMMAND_ALREADY_REGISTERED,
@@ -94,10 +86,9 @@ class CommandsService {
 			await this.rest.put(Routes.applicationCommands(this.clientId), {
 				body: commandsData,
 			});
+
 			LoggerService.debug(logMessages.DEBUG_REGISTER_COMMANDS_END);
 		} catch (error) {
-			console.log(error);
-
 			LoggerService.error(error, logMessages.ERROR_REGISTER_COMMANDS);
 		}
 	}
