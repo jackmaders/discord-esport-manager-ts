@@ -65,11 +65,11 @@ describe("command.service.ts", () => {
 
 		// Assert
 		expect(loggerService.debug).toHaveBeenCalledWith(
-			LogMessages.DebugLoadCommandFileStart,
+			LogMessages.DebugLoadCommandFileEnd,
 			getCommands()[0].data.name,
 		);
 		expect(loggerService.debug).toHaveBeenCalledWith(
-			LogMessages.DebugLoadCommandFileStart,
+			LogMessages.DebugLoadCommandFileEnd,
 			getCommands()[1].data.name,
 		);
 	});

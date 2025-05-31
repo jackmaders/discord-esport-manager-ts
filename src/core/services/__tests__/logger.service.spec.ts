@@ -76,7 +76,7 @@ describe("logger.service.ts", () => {
 		const { loggerService } = await import("../logger.service.ts");
 
 		// Act
-		await loggerService.initialise();
+		loggerService.initialise();
 		loggerService.debug("debug");
 		loggerService.info("info");
 		loggerService.warn("warn");

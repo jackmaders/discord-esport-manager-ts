@@ -30,7 +30,7 @@ class LoggerService {
 		const options: LoggerOptions = {
 			level: PINO_LOG_LEVEL,
 			timestamp: pino.stdTimeFunctions.isoTime,
-			...(isProduction ? {} : { DEV_OPTIONS }),
+			...(isProduction ? {} : DEV_OPTIONS),
 		};
 
 		this.logger = pino(options);
