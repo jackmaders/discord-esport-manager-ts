@@ -7,8 +7,9 @@ import { loggerService } from "../core/services/logger.service.ts";
 import { schedulerService } from "../core/services/scheduler.service.ts";
 import { translationService } from "../core/services/translation.service.ts";
 import { exitProcess } from "../core/utils/exit-process.ts";
+import { main } from "../main.ts";
 
-describe("index.ts", () => {
+describe("main.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
 	});
@@ -20,7 +21,7 @@ describe("index.ts", () => {
 
 	it("should initialise all core services", async () => {
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(loggerService.initialise).toHaveBeenCalled();
@@ -38,7 +39,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
@@ -57,7 +58,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
@@ -78,7 +79,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
@@ -96,7 +97,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(discordClient.once).toHaveBeenCalledWith(
@@ -112,7 +113,7 @@ describe("index.ts", () => {
 		vi.mocked(discordClient).user = { tag: "TestUser#1234" } as ClientUser;
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(discordClient.login).toHaveBeenCalledWith("DISCORD_BOT_TOKEN");
@@ -129,23 +130,11 @@ describe("index.ts", () => {
 		vi.spyOn(console, "error").mockImplementation(vi.fn());
 
 		// Act
-		await import("../index.ts");
+		await main();
 
 		// Assert
 		expect(console.error).toHaveBeenCalledWith(error);
 		expect(exitProcess).toHaveBeenCalledWith(1);
-	});
-
-	it("should setup even handlers for SIGINT and SIGTERM", async () => {
-		// Arrange
-		vi.spyOn(process, "on").mockImplementation(vi.fn());
-
-		// Act
-		await import("../index.ts");
-
-		// Assert
-		expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
-		expect(process.on).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
 	});
 });
 

@@ -1,17 +1,27 @@
 import { prismaClient } from "../../shared/clients/prisma.ts";
 import { discordClient } from "../clients/discord.client.ts";
-import { LogMessages } from "../constants/log-messages.ts";
 import { loggerService } from "../services/logger.service.ts";
 
-export function exitProcess(exitCode = 0) {
-	try {
-		loggerService.info(LogMessages.InfoBotShutdown);
-	} catch (error) {
-		// biome-ignore lint/suspicious/noConsole: fallback for logging errors
-		console.error(error);
-	} finally {
-		prismaClient.$disconnect();
-		discordClient.destroy();
-		process.exit(exitCode);
+let isExiting = false;
+
+export async function exitProcess(exitCode = 0) {
+	if (isExiting) {
+		return null;
 	}
+
+	isExiting = true;
+
+	try {
+		await prismaClient.$disconnect();
+	} catch (error) {
+		loggerService.error("Error during Prisma client disconnection:", error);
+	}
+
+	try {
+		await discordClient.destroy();
+	} catch (error) {
+		loggerService.error("Error during Discord client destruction:", error);
+	}
+
+	process.exit(exitCode);
 }
