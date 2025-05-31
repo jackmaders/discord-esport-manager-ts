@@ -1,46 +1,40 @@
-export default {
+export enum LogMessages {
 	// Bot Entrypoint
-	INFO_BOT_START: "Starting bot...",
-	INFO_BOT_LOGIN: "Logged in as '%s'.",
-	INFO_BOT_READY: "Bot is ready.",
-	INFO_BOT_SHUTDOWN: "Shutting down bot...",
+	InfoBotStart = "Starting bot...",
+	InfoBotLogin = "Logged in as '%s'.",
+	InfoBotReady = "Bot is ready.",
+	InfoBotShutdown = "Shutting down bot...",
 
 	// I18n
-	DEBUG_I18N_INIT: "I18n initialized.",
+	DebugI18nInit = "I18n initialized.",
 
 	// Commands Service
-	INFO_SKIP_COMMAND_REGISTRATION: "Skipping command registration.",
-	DEBUG_INIT_SERVICE_START: "Initializing Commands Service...",
-	DEBUG_INIT_SERVICE_END: "Commands Service initialized.",
-	DEBUG_LOAD_MODULES_START: "Loading module(s)...",
-	DEBUG_LOAD_MODULES_END: "Module(s) loaded.",
-	DEBUG_LOAD_COMMAND_FILE_START: "Loading '%s' command file...",
-	DEBUG_LOAD_COMMAND_FILE_END: "Command file '%s' loaded.",
-	DEBUG_REGISTER_COMMANDS_START: "Registering %s command(s)...",
-	DEBUG_REGISTER_COMMANDS_END: "Commands registered.",
-	DEBUG_HANDLE_INTERACTION_START: "Handling '/%s' interaction...",
-	DEBUG_HANDLE_INTERACTION_END: "Interaction '/%s' complete.",
-	DEBUG_NO_COMMANDS_FOUND:
-		"No '/commands' directory found for module '%s'; skipping.",
-	WARN_COMMAND_FILE_NOT_RECOGNISED:
-		"Command file '%s' not recognised; skipping.",
-	WARN_COMMAND_FILE_INVALID:
-		"Command file '%s' did not have the correct export; skipping.",
-	WARN_COMMAND_ALREADY_REGISTERED: "Command '%s' already registered; skipping.",
-	WARN_NO_COMMANDS_RECOGNISED: "No commands recognised after loading modules.",
-	ERROR_LOAD_MODULE: "Error loading module '%s'; skipping.",
-	ERROR_LOAD_COMMAND_FILE: "Error loading command file '%s'; skipping.",
-	ERROR_REGISTER_COMMANDS:
-		"Error registering commands; some commands may be unavailable.",
+	InfoSkipCommandRegistration = "Skipping command registration.",
+	DebugInitServiceStart = "Initializing Commands Service...",
+	DebugInitServiceEnd = "Commands Service initialized.",
+	DebugLoadModulesStart = "Loading module(s)...",
+	DebugLoadModulesEnd = "Module(s) loaded.",
+	DebugLoadCommandFileStart = "Loading '%s' command file...",
+	DebugLoadCommandFileEnd = "Command file '%s' loaded.",
+	DebugRegisterCommandsStart = "Registering %s command(s)...",
+	DebugRegisterCommandsEnd = "Commands registered.",
+	DebugHandleInteractionStart = "Handling '/%s' interaction...",
+	DebugHandleInteractionEnd = "Interaction '/%s' complete.",
+	DebugNoCommandsFound = "No '/commands' directory found for module '%s'; skipping.",
+	WarnCommandFileNotRecognised = "Command file '%s' not recognised; skipping.",
+	WarnCommandFileInvalid = "Command file '%s' did not have the correct export; skipping.",
+	WarnCommandAlreadyRegistered = "Command '%s' already registered; skipping.",
+	WarnNoCommandsRecognised = "No commands recognised after loading modules.",
+	ErrorLoadModule = "Error loading module '%s'; skipping.",
+	ErrorLoadCommandFile = "Error loading command file '%s'; skipping.",
+	ErrorRegisterCommands = "Error registering commands; some commands may be unavailable.",
 
 	// Logger
-	DEBUG_LOGGER_INIT: "Logger initialized with level: '%s'",
+	DebugLoggerInit = "Logger initialized with level= '%s'",
 
 	// Interaction Handler
-	ERROR_HANDLE_INTERACTION:
-		"Error handling interaction '/%s'; attempting to provide error response.",
-	WARN_INTERACTION_NOT_REPLIABLE:
-		"Interaction not repliable; cannot send error message.",
-	DEBUG_CANNOT_REPLY: "Cannot reply to interaction; sending another reply.",
-	WARN_COMMAND_NOT_FOUND: "Command '/%s' not found.",
-};
+	ErrorHandleInteraction = "Error handling interaction '/%s'; attempting to provide error response.",
+	WarnInteractionNotRepliable = "Interaction not repliable; cannot send error message.",
+	DebugCannotReply = "Cannot reply to interaction; sending another reply.",
+	WarnCommandNotFound = "Command '/%s' not found.",
+}

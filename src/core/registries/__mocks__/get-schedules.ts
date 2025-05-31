@@ -8,4 +8,4 @@ const schedules = [
 	},
 ];
 
-export default vi.fn(() => schedules);
+export const getSchedules = vi.fn(() => schedules);

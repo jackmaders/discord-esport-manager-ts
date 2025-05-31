@@ -1,6 +1,5 @@
 import { init } from "i18next";
-
-import getLocales from "../registries/get-locales";
+import { getLocales } from "../registries/get-locales.ts";
 
 class TranslationService {
 	private static instance: TranslationService;
@@ -15,6 +14,7 @@ class TranslationService {
 			lng: "en",
 			fallbackLng: "en",
 			ns: Object.keys(locales.en),
+			// biome-ignore lint/style/useNamingConvention: i18next uses double capitalisation
 			defaultNS: "common",
 			interpolation: {
 				escapeValue: false,
@@ -30,4 +30,4 @@ class TranslationService {
 	}
 }
 
-export default TranslationService.getInstance();
+export const translationService = TranslationService.getInstance();

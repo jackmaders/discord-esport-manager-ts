@@ -1,5 +1,4 @@
-import type PinoLogger from "pino";
-import { type Mock, vi } from "vitest";
+import { vi } from "vitest";
 
 const debug = vi.fn();
 const info = vi.fn();
@@ -13,9 +12,10 @@ const pino = vi.fn(() => ({
 	warn,
 }));
 
-// biome-ignore lint/suspicious/noExplicitAny: Allow mocking of Pino's type
+// biome-ignore lint/suspicious/noExplicitAny: Mocking Pino
 (pino as any).stdTimeFunctions = {
 	isoTime: vi.fn(),
 };
 
+// biome-ignore lint/style/noDefaultExport: Mocking Pino
 export default pino;

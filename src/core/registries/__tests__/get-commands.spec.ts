@@ -6,12 +6,12 @@ describe("commands.ts", () => {
 	});
 
 	it("should export an array of commands", async () => {
-		const { default: getCommands } = await import("../get-commands");
+		const { getCommands } = await import("../get-commands.ts");
 		expect(getCommands()).toBeInstanceOf(Array);
 	});
 
 	it("should export commands with data and execute properties", async () => {
-		const { default: getCommands } = await import("../get-commands");
+		const { getCommands } = await import("../get-commands.ts");
 		for (const command of getCommands()) {
 			expect(command).toHaveProperty("data");
 			expect(typeof command.data).toBe("object");

@@ -7,12 +7,12 @@ import {
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
-import handleConfigChannelSetAvailability from "../handlers/config-channel-set-availability.handler";
-import handleConfigRoleSetTeamMember from "../handlers/config-role-set-team-member.handler";
-import handleConfigRoleSetTrial from "../handlers/config-role-set-trial.handler";
+import { CommandNotFoundError } from "../../../shared/errors/command-not-found-error.ts";
+import { handleConfigChannelSetAvailability } from "../handlers/config-channel-set-availability.handler";
+import { handleConfigRoleSetTeamMember } from "../handlers/config-role-set-team-member.handler";
+import { handleConfigRoleSetTrial } from "../handlers/config-role-set-trial.handler";
 
-const command = {
+export const configCommand = {
 	data: new SlashCommandBuilder()
 		.setName("admin")
 		.setDescription("Configure the bot")
@@ -94,5 +94,3 @@ const command = {
 		}
 	},
 };
-
-export default command;

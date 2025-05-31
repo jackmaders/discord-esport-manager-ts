@@ -6,12 +6,12 @@ describe("schedules.ts", () => {
 	});
 
 	it("should export an array of commands", async () => {
-		const { default: getSchedules } = await import("../get-schedules");
+		const { getSchedules } = await import("../get-schedules.ts");
 		expect(getSchedules()).toBeInstanceOf(Array);
 	});
 
 	it("should export commands with data and execute properties", async () => {
-		const { default: getSchedules } = await import("../get-schedules");
+		const { getSchedules } = await import("../get-schedules.ts");
 		for (const schedule of getSchedules()) {
 			expect(schedule).toHaveProperty("name");
 			expect(typeof schedule.name).toBe("string");

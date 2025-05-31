@@ -1,12 +1,12 @@
 import { type ClientUser, Events } from "discord.js";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import discordClient from "../core/clients/discord.client";
-import logMessages from "../core/constants/log-messages";
-import commandsService from "../core/services/command.service";
-import loggerService from "../core/services/logger.service";
-import schedulerService from "../core/services/scheduler.service";
-import translationService from "../core/services/translation.service";
-import exitProcess from "../core/utils/exit-process";
+import { discordClient } from "../core/clients/discord.client.ts";
+import { LogMessages } from "../core/constants/log-messages.ts";
+import { commandService } from "../core/services/command.service.ts";
+import { loggerService } from "../core/services/logger.service.ts";
+import { schedulerService } from "../core/services/scheduler.service.ts";
+import { translationService } from "../core/services/translation.service.ts";
+import { exitProcess } from "../core/utils/exit-process.ts";
 
 describe("index.ts", () => {
 	afterEach(() => {
@@ -20,13 +20,13 @@ describe("index.ts", () => {
 
 	it("should initialise all core services", async () => {
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(loggerService.initialise).toHaveBeenCalled();
 		expect(schedulerService.initialise).toHaveBeenCalled();
 		expect(translationService.initialise).toHaveBeenCalled();
-		expect(commandsService.initialise).toHaveBeenCalled();
+		expect(commandService.initialise).toHaveBeenCalled();
 	});
 
 	it("should assign the Error discord.js event listener", async () => {
@@ -38,7 +38,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
@@ -57,7 +57,7 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
@@ -78,14 +78,14 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(discordClient.on).toHaveBeenCalledWith(
 			Events.InteractionCreate,
 			expect.any(Function),
 		);
-		expect(commandsService.handleInteraction).toHaveBeenCalledWith(interaction);
+		expect(commandService.handleInteraction).toHaveBeenCalledWith(interaction);
 	});
 
 	it("should assign the ClientReady discord.js event listener", async () => {
@@ -96,14 +96,14 @@ describe("index.ts", () => {
 		});
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(discordClient.once).toHaveBeenCalledWith(
 			Events.ClientReady,
 			expect.any(Function),
 		);
-		expect(loggerService.info).toHaveBeenCalledWith(logMessages.INFO_BOT_READY);
+		expect(loggerService.info).toHaveBeenCalledWith(LogMessages.InfoBotReady);
 	});
 
 	it("should login to the discord client", async () => {
@@ -112,12 +112,12 @@ describe("index.ts", () => {
 		vi.mocked(discordClient).user = { tag: "TestUser#1234" } as ClientUser;
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(discordClient.login).toHaveBeenCalledWith("DISCORD_BOT_TOKEN");
 		expect(loggerService.info).toHaveBeenCalledWith(
-			logMessages.INFO_BOT_LOGIN,
+			LogMessages.InfoBotLogin,
 			discordClient.user?.tag,
 		);
 	});
@@ -129,7 +129,7 @@ describe("index.ts", () => {
 		vi.spyOn(console, "error").mockImplementation(vi.fn());
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(console.error).toHaveBeenCalledWith(error);
@@ -141,7 +141,7 @@ describe("index.ts", () => {
 		vi.spyOn(process, "on").mockImplementation(vi.fn());
 
 		// Act
-		await import("../index");
+		await import("../index.ts");
 
 		// Assert
 		expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
@@ -149,9 +149,9 @@ describe("index.ts", () => {
 	});
 });
 
-vi.mock("../core/services/command.service");
-vi.mock("../core/services/logger.service");
-vi.mock("../core/services/scheduler.service");
-vi.mock("../core/services/translation.service");
-vi.mock("../core/clients/discord.client");
-vi.mock("../core/utils/exit-process");
+vi.mock("../core/services/command.service.ts");
+vi.mock("../core/services/logger.service.ts");
+vi.mock("../core/services/scheduler.service.ts");
+vi.mock("../core/services/translation.service.ts");
+vi.mock("../core/clients/discord.client.ts");
+vi.mock("../core/utils/exit-process.ts");

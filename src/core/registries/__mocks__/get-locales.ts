@@ -7,4 +7,4 @@ const locales = {
 	},
 };
 
-export default vi.fn(() => locales);
+export const getLocales = vi.fn(() => locales);

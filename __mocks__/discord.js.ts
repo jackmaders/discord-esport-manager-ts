@@ -12,5 +12,3 @@ export const REST = vi.fn(() => ({
 export const Routes = {
 	applicationCommands: vi.fn(),
 };
-
-export default {};

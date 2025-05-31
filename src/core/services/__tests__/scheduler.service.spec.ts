@@ -9,7 +9,7 @@ describe("scheduler.service.ts", () => {
 
 	it("should export a SchedulerService instance", async () => {
 		// Act
-		const schedulerService = (await import("../scheduler.service")).default;
+		const { schedulerService } = await import("../scheduler.service.ts");
 
 		// Assert
 		expect(schedulerService).toBeDefined();
@@ -18,30 +18,33 @@ describe("scheduler.service.ts", () => {
 
 	it("should return the same instance when imported twice", async () => {
 		// Act
-		const schedulerService1 = (await import("../scheduler.service")).default;
-		const schedulerService2 = (await import("../scheduler.service")).default;
+		const { schedulerService: service1 } = await import(
+			"../scheduler.service.ts"
+		);
+		const { schedulerService: service2 } = await import(
+			"../scheduler.service.ts"
+		);
 
 		// Assert
-		expect(schedulerService1).toBe(schedulerService2);
+		expect(service1).toBe(service2);
 	});
 
 	it("should correctly initialise the schedules", async () => {
-		const ONE_HOUR_MS = 3600000;
+		const oneHourMs = 3600000;
 
 		// Arrange
 		vi.useFakeTimers();
-		const getSchedules = (await import("../../registries/get-schedules"))
-			.default;
-		const schedulerService = (await import("../scheduler.service")).default;
+		const { getSchedules } = await import("../../registries/get-schedules.ts");
+		const { schedulerService } = await import("../scheduler.service.ts");
 
 		// Act
 		await schedulerService.initialise();
-		vi.advanceTimersByTime(ONE_HOUR_MS);
+		vi.advanceTimersByTime(oneHourMs);
 
 		// Assert
 		expect(getSchedules).toHaveBeenCalled();
 		expect(getSchedules()[0].execute).toHaveBeenCalledTimes(1);
-		vi.advanceTimersByTime(ONE_HOUR_MS);
+		vi.advanceTimersByTime(oneHourMs);
 		expect(getSchedules()[0].execute).toHaveBeenCalledTimes(2);
 	});
 });

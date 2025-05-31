@@ -1,4 +1,4 @@
-import availabilityPollSchedule from "../../modules/availability/schedules/availability-poll.schedule";
+import { availabilityPollSchedule } from "../../modules/availability/schedules/availability-poll.schedule";
 
 export interface Schedule {
 	name: string;
@@ -8,8 +8,6 @@ export interface Schedule {
 
 const schedules = [availabilityPollSchedule];
 
-function getSchedules(): Schedule[] {
+export function getSchedules(): Schedule[] {
 	return schedules;
 }
-
-export default getSchedules;

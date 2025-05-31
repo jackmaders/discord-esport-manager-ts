@@ -6,6 +6,8 @@ describe("discord.client.ts", () => {
 		vi.resetModules();
 	});
 	it("should initialise the Discord client", async () => {
-		expect((await import("../discord.client")).default).toBeInstanceOf(Client);
+		const { discordClient } = await import("../discord.client.ts");
+
+		expect(discordClient).toBeInstanceOf(Client);
 	});
 });

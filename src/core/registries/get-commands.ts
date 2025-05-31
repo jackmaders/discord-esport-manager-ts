@@ -5,8 +5,8 @@ import type {
 	SlashCommandSubcommandGroupBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import availabilityCommand from "../../modules/availability/commands/availability.command";
-import configCommand from "../../modules/config/commands/config.command";
+import { availabilityCommand } from "../../modules/availability/commands/availability.command";
+import { configCommand } from "../../modules/config/commands/config.command";
 
 export interface SlashCommand {
 	data:
@@ -21,8 +21,6 @@ export interface SlashCommand {
 
 const commands = [availabilityCommand, configCommand];
 
-function getCommands(): SlashCommand[] {
+export function getCommands(): SlashCommand[] {
 	return commands;
 }
-
-export default getCommands;

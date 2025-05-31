@@ -17,4 +17,4 @@ const commands = [
 	},
 ];
 
-export default vi.fn(() => commands);
+export const getCommands = vi.fn(() => commands);

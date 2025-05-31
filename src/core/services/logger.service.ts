@@ -1,5 +1,5 @@
 import pino, { type Logger, type LoggerOptions } from "pino";
-import getEnvironmentVariables from "../config/get-environment-variables";
+import { getEnvironmentVariables } from "../config/get-environment-variables.ts";
 
 const DEV_OPTIONS: Partial<LoggerOptions> = {
 	transport: {
@@ -22,15 +22,15 @@ class LoggerService {
 	public warn: Logger["warn"] = console.warn;
 	private constructor() {}
 
-	public async initialise() {
+	public initialise() {
 		const { NODE_ENV, PINO_LOG_LEVEL } = getEnvironmentVariables();
 
-		const IS_PRODUCTION = NODE_ENV === "production";
+		const isProduction = NODE_ENV === "production";
 
 		const options: LoggerOptions = {
 			level: PINO_LOG_LEVEL,
 			timestamp: pino.stdTimeFunctions.isoTime,
-			...(!IS_PRODUCTION ? DEV_OPTIONS : {}),
+			...(isProduction ? {} : { DEV_OPTIONS }),
 		};
 
 		this.logger = pino(options);
@@ -49,4 +49,4 @@ class LoggerService {
 	}
 }
 
-export default LoggerService.getInstance();
+export const loggerService = LoggerService.getInstance();

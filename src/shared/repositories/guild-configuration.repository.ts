@@ -1,16 +1,17 @@
-import prismaClient from "../clients/prisma";
+import { prismaClient } from "../clients/prisma.ts";
 
-async function getGuildConfiguration(guildId: string) {
+function getGuildConfiguration(guildId: string) {
 	return prismaClient.guildConfiguration.findUnique({
 		where: { id: guildId },
 	});
 }
+
 async function getAvailabilityChannelId(guildId: string) {
 	const config = await getGuildConfiguration(guildId);
 	return config?.availabilityChannelId ?? null;
 }
 
-async function setAvailabilityChannelId(guildId: string, channelId: string) {
+function setAvailabilityChannelId(guildId: string, channelId: string) {
 	return prismaClient.guildConfiguration.upsert({
 		where: { id: guildId },
 		update: { availabilityChannelId: channelId },
@@ -23,7 +24,7 @@ async function getTeamMemberRoleId(guildId: string) {
 	return config?.teamMemberRoleId ?? null;
 }
 
-async function setTeamMemberRoleId(guildId: string, roleId: string) {
+function setTeamMemberRoleId(guildId: string, roleId: string) {
 	return prismaClient.guildConfiguration.upsert({
 		where: { id: guildId },
 		update: { teamMemberRoleId: roleId },
@@ -36,7 +37,7 @@ async function getTrialRoleId(guildId: string) {
 	return config?.trialRoleId ?? null;
 }
 
-async function setTrialRoleId(guildId: string, roleId: string) {
+function setTrialRoleId(guildId: string, roleId: string) {
 	return prismaClient.guildConfiguration.upsert({
 		where: { id: guildId },
 		update: { trialRoleId: roleId },
@@ -44,7 +45,7 @@ async function setTrialRoleId(guildId: string, roleId: string) {
 	});
 }
 
-export default {
+export const guildConfigurationRepository = {
 	getGuildConfiguration,
 	getAvailabilityChannelId,
 	setAvailabilityChannelId,

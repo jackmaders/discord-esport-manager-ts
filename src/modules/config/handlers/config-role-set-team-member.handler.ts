@@ -4,13 +4,15 @@ import {
 	MessageFlags,
 } from "discord.js";
 import { t } from "i18next";
-import { GuildOnlyError } from "../../../shared/errors/GuildOnlyError";
-import guildConfigurationRepository from "../../../shared/repositories/guild-configuration.repository";
+import { GuildOnlyError } from "../../../shared/errors/guild-only-error.ts";
+import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration.repository";
 
-async function handleConfigRoleSetTeamMember(
+export async function handleConfigRoleSetTeamMember(
 	interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-	if (!interaction.guildId) throw new GuildOnlyError(interaction.commandName);
+	if (!interaction.guildId) {
+		throw new GuildOnlyError(interaction.commandName);
+	}
 
 	const role = interaction.options.getRole("role", true);
 
@@ -24,5 +26,3 @@ async function handleConfigRoleSetTeamMember(
 		flags: [MessageFlags.Ephemeral],
 	});
 }
-
-export default handleConfigRoleSetTeamMember;

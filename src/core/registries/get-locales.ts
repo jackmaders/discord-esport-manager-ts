@@ -8,8 +8,6 @@ const locales = {
 	},
 };
 
-function getLocales() {
+export function getLocales() {
 	return locales;
 }
-
-export default getLocales;

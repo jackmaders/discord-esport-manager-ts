@@ -1,4 +1,3 @@
-import { init } from "i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("translation.service.ts", () => {
@@ -9,7 +8,7 @@ describe("translation.service.ts", () => {
 
 	it("should export a TranslationService instance", async () => {
 		// Act
-		const translationService = (await import("../translation.service")).default;
+		const { translationService } = await import("../translation.service.ts");
 
 		// Assert
 		expect(translationService).toBeDefined();
@@ -18,20 +17,22 @@ describe("translation.service.ts", () => {
 
 	it("should return the same instance when imported twice", async () => {
 		// Act
-		const translationService1 = (await import("../translation.service"))
-			.default;
-		const translationService2 = (await import("../translation.service"))
-			.default;
+		const { translationService: service1 } = await import(
+			"../translation.service.ts"
+		);
+		const { translationService: service2 } = await import(
+			"../translation.service.ts"
+		);
 
 		// Assert
-		expect(translationService1).toBe(translationService2);
+		expect(service1).toBe(service2);
 	});
 
 	it("should correctly initialise the service", async () => {
 		// Arrange
 		const { init } = await import("i18next");
-		const getLocales = (await import("../../registries/get-locales")).default;
-		const translationService = (await import("../translation.service")).default;
+		const { getLocales } = await import("../../registries/get-locales.ts");
+		const { translationService } = await import("../translation.service.ts");
 
 		// Act
 		await translationService.initialise();
@@ -39,6 +40,7 @@ describe("translation.service.ts", () => {
 		// Assert
 		expect(getLocales).toHaveBeenCalled();
 		expect(init).toHaveBeenCalledWith({
+			// biome-ignore lint/style/useNamingConvention: i18next uses double capitalisation
 			defaultNS: "common",
 			fallbackLng: "en",
 			interpolation: {

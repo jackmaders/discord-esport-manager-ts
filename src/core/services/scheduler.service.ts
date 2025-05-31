@@ -1,12 +1,12 @@
 import { Cron } from "croner";
-import getSchedules from "../registries/get-schedules";
+import { getSchedules } from "../registries/get-schedules.ts";
 
 class SchedulerService {
 	private static instance: SchedulerService;
 
 	private constructor() {}
 
-	async initialise() {
+	initialise() {
 		for (const schedule of getSchedules()) {
 			new Cron(schedule.pattern, { name: schedule.name }, schedule.execute);
 		}
@@ -18,4 +18,4 @@ class SchedulerService {
 	}
 }
 
-export default SchedulerService.getInstance();
+export const schedulerService = SchedulerService.getInstance();

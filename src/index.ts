@@ -1,36 +1,7 @@
-import { Events } from "discord.js";
-import discordClient from "./core/clients/discord.client";
-import getEnvironmentVariables from "./core/config/get-environment-variables";
-import logMessages from "./core/constants/log-messages";
-import commandsService from "./core/services/command.service";
-import loggerService from "./core/services/logger.service";
-import schedulerService from "./core/services/scheduler.service";
-import translationService from "./core/services/translation.service";
-import exitProcess from "./core/utils/exit-process";
+import exitProcess from "./core/utils/exit-process.ts";
+import { main } from "./main.ts";
 
-(async () => {
-	try {
-		await loggerService.initialise();
-		await schedulerService.initialise();
-		await translationService.initialise();
-		await commandsService.initialise();
-
-		discordClient.on(Events.Error, (error) => loggerService.error(error));
-		discordClient.on(Events.Warn, (message) => loggerService.warn(message));
-		discordClient.on(Events.InteractionCreate, (interaction) =>
-			commandsService.handleInteraction(interaction),
-		);
-		discordClient.once(Events.ClientReady, () =>
-			loggerService.info(logMessages.INFO_BOT_READY),
-		);
-
-		await discordClient.login(getEnvironmentVariables().DISCORD_BOT_TOKEN);
-		loggerService.info(logMessages.INFO_BOT_LOGIN, discordClient.user?.tag);
-	} catch (error) {
-		console.error(error);
-		exitProcess(1);
-	}
-})();
+main();
 
 process.on("SIGINT", () => exitProcess(0));
 process.on("SIGTERM", () => exitProcess(0));

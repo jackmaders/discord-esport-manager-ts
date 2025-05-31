@@ -3,9 +3,10 @@
  * but the command is only available in a guild context.
  */
 export class GuildOnlyError extends Error {
-	constructor(public readonly commandName: string) {
+	public readonly commandName: string;
+	constructor(commandName: string) {
 		super(`Cannot execute command "${commandName}" outside a guild.`);
-
 		this.name = "GuildOnlyError";
+		this.commandName = commandName;
 	}
 }

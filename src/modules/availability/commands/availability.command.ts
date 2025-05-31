@@ -6,10 +6,10 @@ import {
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { CommandNotFoundError } from "../../../shared/errors/CommandNotFound";
-import handleAvailabilityQuery from "../handlers/availability-query.handler";
+import { CommandNotFoundError } from "../../../shared/errors/command-not-found-error.ts";
+import { handleAvailabilityQuery } from "../handlers/availability-query.handler";
 
-export default {
+export const availabilityCommand = {
 	data: new SlashCommandBuilder()
 		.setName("availability")
 		.setDescription("Manage the availability of a team")

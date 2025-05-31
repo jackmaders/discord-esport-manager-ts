@@ -8,7 +8,7 @@ describe("logger.service.ts", () => {
 
 	it("should export a LoggerService instance", async () => {
 		// Act
-		const loggerService = (await import("../logger.service")).default;
+		const { loggerService } = await import("../logger.service.ts");
 
 		// Assert
 		expect(loggerService).toBeDefined();
@@ -17,11 +17,11 @@ describe("logger.service.ts", () => {
 
 	it("should return the same instance when imported twice", async () => {
 		// Act
-		const loggerService1 = (await import("../logger.service")).default;
-		const loggerService2 = (await import("../logger.service")).default;
+		const { loggerService: service1 } = await import("../logger.service.ts");
+		const { loggerService: service2 } = await import("../logger.service.ts");
 
 		// Assert
-		expect(loggerService1).toBe(loggerService2);
+		expect(service1).toBe(service2);
 	});
 
 	it("should handle if logging methods are called before initialisation", async () => {
@@ -30,7 +30,7 @@ describe("logger.service.ts", () => {
 		vi.spyOn(console, "info").mockImplementation(vi.fn());
 		vi.spyOn(console, "warn").mockImplementation(vi.fn());
 		vi.spyOn(console, "error").mockImplementation(vi.fn());
-		const loggerService = (await import("../logger.service")).default;
+		const { loggerService } = await import("../logger.service.ts");
 
 		// Act
 		loggerService.debug("debug");
@@ -49,7 +49,7 @@ describe("logger.service.ts", () => {
 		// Arrange
 		vi.stubEnv("NODE_ENV", "production");
 		const pino = (await import("pino")).default;
-		const loggerService = (await import("../logger.service")).default;
+		const { loggerService } = await import("../logger.service.ts");
 
 		// Act
 		await loggerService.initialise();
@@ -73,7 +73,7 @@ describe("logger.service.ts", () => {
 		// Arrange
 		vi.stubEnv("NODE_ENV", "development");
 		const pino = (await import("pino")).default;
-		const loggerService = (await import("../logger.service")).default;
+		const { loggerService } = await import("../logger.service.ts");
 
 		// Act
 		await loggerService.initialise();

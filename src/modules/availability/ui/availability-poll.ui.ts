@@ -1,13 +1,15 @@
-import type { SendableChannels, TextBasedChannel } from "discord.js";
+import type { TextBasedChannel } from "discord.js";
 import { t } from "i18next";
-import guildConfigurationRepository from "../../../shared/repositories/guild-configuration.repository";
-import getNextMonday from "../utils/getNextMonday";
+import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration.repository";
+import { getNextMonday } from "../utils/get-next-monday.ts";
 
-async function sendAvailabilityPoll(
+export async function sendAvailabilityPoll(
 	channel: TextBasedChannel | null,
 	guildId: string,
 ) {
-	if (!channel?.isSendable()) return;
+	if (!channel?.isSendable()) {
+		return;
+	}
 
 	const nextMonday = getNextMonday();
 
@@ -39,7 +41,7 @@ async function sendAvailabilityPoll(
 	});
 
 	// Poll should expire on the upcoming Sunday
-	const durationMilliseconds = nextMonday.getTime() - new Date().getTime();
+	const durationMilliseconds = nextMonday.getTime() - Date.now();
 	const durationHours = Math.floor(durationMilliseconds / (1000 * 60 * 60));
 
 	await channel.send({
@@ -54,5 +56,3 @@ async function sendAvailabilityPoll(
 		},
 	});
 }
-
-export default sendAvailabilityPoll;

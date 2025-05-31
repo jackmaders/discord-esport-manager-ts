@@ -1,19 +1,20 @@
 import { type CacheType, type Interaction, REST, Routes } from "discord.js";
-import { CommandNotFoundError } from "../../shared/errors/CommandNotFound";
-import getEnvironmentVariables from "../config/get-environment-variables";
-import logMessages from "../constants/log-messages";
-import getCommands, { type SlashCommand } from "../registries/get-commands";
-import LoggerService from "./logger.service";
+import { CommandNotFoundError } from "../../shared/errors/command-not-found-error.ts";
+import { getEnvironmentVariables } from "../config/get-environment-variables.ts";
+import { LogMessages } from "../constants/log-messages.ts";
+import { type SlashCommand, getCommands } from "../registries/get-commands.ts";
+import { loggerService } from "./logger.service.ts";
 
 class CommandsService {
 	private static instance: CommandsService;
 	private commands = new Map<string, SlashCommand>();
 	private rest: REST;
+	private readonly token: string;
+	private readonly clientId: string;
 
-	private constructor(
-		private readonly token: string,
-		private readonly clientId: string,
-	) {
+	private constructor(token: string, clientId: string) {
+		this.token = token;
+		this.clientId = clientId;
 		this.rest = new REST({ version: "10" }).setToken(this.token);
 	}
 
@@ -21,40 +22,40 @@ class CommandsService {
 	 * Loads commands and registers them with Discord.
 	 */
 	async initialise() {
-		LoggerService.debug(logMessages.DEBUG_INIT_SERVICE_START);
+		loggerService.debug(LogMessages.DebugInitServiceStart);
 
 		this.loadModules();
 		await this.registerCommands();
 
-		LoggerService.debug(logMessages.DEBUG_INIT_SERVICE_END);
+		loggerService.debug(LogMessages.DebugInitServiceEnd);
 	}
 
 	/**
 	 * Loads all modules and their commands.
 	 */
 	private loadModules() {
-		LoggerService.debug(logMessages.DEBUG_LOAD_MODULES_START);
+		loggerService.debug(LogMessages.DebugLoadModulesStart);
 		this.commands.clear();
 
 		for (const command of getCommands()) {
 			if (this.commands.has(command.data.name)) {
-				LoggerService.warn(
-					logMessages.WARN_COMMAND_ALREADY_REGISTERED,
+				loggerService.warn(
+					LogMessages.WarnCommandAlreadyRegistered,
 					command.data.name,
 				);
 				continue;
 			}
 			this.commands.set(command.data.name, command);
-			LoggerService.debug(
-				logMessages.DEBUG_LOAD_COMMAND_FILE_END,
+			loggerService.debug(
+				LogMessages.DebugLoadCommandFileEnd,
 				command.data.name,
 			);
 		}
 
 		if (this.commands.size === 0) {
-			LoggerService.warn(logMessages.WARN_NO_COMMANDS_RECOGNISED);
+			loggerService.warn(LogMessages.WarnNoCommandsRecognised);
 		}
-		LoggerService.debug(logMessages.DEBUG_LOAD_MODULES_END);
+		loggerService.debug(LogMessages.DebugLoadModulesEnd);
 	}
 
 	/**
@@ -63,15 +64,18 @@ class CommandsService {
 	private async registerCommands() {
 		try {
 			if (getEnvironmentVariables().SKIP_COMMAND_REGISTRATION) {
-				LoggerService.info(logMessages.INFO_SKIP_COMMAND_REGISTRATION);
+				loggerService.info(LogMessages.InfoSkipCommandRegistration);
 				return;
 			}
 
-			LoggerService.debug(
-				logMessages.DEBUG_REGISTER_COMMANDS_START,
+			loggerService.debug(
+				LogMessages.DebugRegisterCommandsStart,
 				this.commands.size,
 			);
-			if (this.commands.size === 0) return;
+
+			if (this.commands.size === 0) {
+				return;
+			}
 
 			const commandsData = this.commands
 				.entries()
@@ -81,9 +85,9 @@ class CommandsService {
 				body: commandsData,
 			});
 
-			LoggerService.debug(logMessages.DEBUG_REGISTER_COMMANDS_END);
+			loggerService.debug(LogMessages.DebugRegisterCommandsEnd);
 		} catch (error) {
-			LoggerService.error(error, logMessages.ERROR_REGISTER_COMMANDS);
+			loggerService.error(error, LogMessages.ErrorRegisterCommands);
 		}
 	}
 
@@ -91,20 +95,21 @@ class CommandsService {
 	 * Handles incoming interactions and executes the corresponding command.
 	 */
 	async handleInteraction(interaction: Interaction<CacheType>) {
-		if (!interaction.isChatInputCommand()) return;
+		if (!interaction.isChatInputCommand()) {
+			return;
+		}
 		const { commandName } = interaction;
 
-		LoggerService.debug(
-			logMessages.DEBUG_HANDLE_INTERACTION_START,
-			commandName,
-		);
+		loggerService.debug(LogMessages.DebugHandleInteractionStart, commandName);
 
 		const command = this.commands.get(commandName);
 
-		if (!command) throw new CommandNotFoundError(commandName);
+		if (!command) {
+			throw new CommandNotFoundError(commandName);
+		}
 
 		await command.execute(interaction);
-		LoggerService.debug(logMessages.DEBUG_HANDLE_INTERACTION_END, commandName);
+		loggerService.debug(LogMessages.DebugHandleInteractionEnd, commandName);
 	}
 
 	/**
@@ -118,7 +123,7 @@ class CommandsService {
 
 const { DISCORD_BOT_TOKEN, DISCORD_CLIENT_ID } = getEnvironmentVariables();
 
-export default CommandsService.getInstance(
+export const commandService = CommandsService.getInstance(
 	DISCORD_BOT_TOKEN,
 	DISCORD_CLIENT_ID,
 );

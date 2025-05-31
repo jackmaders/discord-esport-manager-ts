@@ -1,12 +1,13 @@
-import prismaClient from "../../shared/clients/prisma.ts";
-import discordClient from "../clients/discord.client.ts";
-import logMessages from "../constants/log-messages.ts";
-import loggerService from "../services/logger.service.ts";
+import { prismaClient } from "../../shared/clients/prisma.ts";
+import { discordClient } from "../clients/discord.client.ts";
+import { LogMessages } from "../constants/log-messages.ts";
+import { loggerService } from "../services/logger.service.ts";
 
-function exitProcess(exitCode = 0) {
+export function exitProcess(exitCode = 0) {
 	try {
-		loggerService.info(logMessages.INFO_BOT_SHUTDOWN);
+		loggerService.info(LogMessages.InfoBotShutdown);
 	} catch (error) {
+		// biome-ignore lint/suspicious/noConsole: fallback for logging errors
 		console.error(error);
 	} finally {
 		prismaClient.$disconnect();
@@ -14,5 +15,3 @@ function exitProcess(exitCode = 0) {
 		process.exit(exitCode);
 	}
 }
-
-export default exitProcess;
