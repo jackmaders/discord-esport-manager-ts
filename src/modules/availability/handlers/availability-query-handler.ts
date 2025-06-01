@@ -6,8 +6,8 @@ import {
 import { t } from "i18next";
 import { discordClient } from "../../../core/clients/discord-client.ts";
 import { GuildOnlyError } from "../../../shared/errors/guild-only-error.ts";
-import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration.repository";
-import { sendAvailabilityPoll } from "../ui/availability-poll.ui";
+import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration-repository.ts";
+import { sendAvailabilityPoll } from "../ui/availability-poll.ts";
 
 export async function handleAvailabilityQuery(
 	interaction: ChatInputCommandInteraction<CacheType>,

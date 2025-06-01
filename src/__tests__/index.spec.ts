@@ -26,4 +26,4 @@ describe("index.ts", () => {
 
 vi.mock("../main.ts");
 vi.mock("../core/utils/setup-signal-handlers.ts");
-vi.mock("../core/services/logger.service.ts");
+vi.mock("../core/services/logger-service.ts");

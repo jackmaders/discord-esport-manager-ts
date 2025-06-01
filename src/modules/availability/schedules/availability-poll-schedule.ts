@@ -1,6 +1,6 @@
 import { discordClient } from "../../../core/clients/discord-client.ts";
 import { prismaClient } from "../../../shared/clients/prisma.ts";
-import { sendAvailabilityPoll } from "../ui/availability-poll.ui.ts";
+import { sendAvailabilityPoll } from "../ui/availability-poll.ts";
 
 export const availabilityPollSchedule = {
 	name: "Weekly Availability Poll",

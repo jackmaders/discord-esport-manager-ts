@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import { t } from "i18next";
 import { GuildOnlyError } from "../../../shared/errors/guild-only-error.ts";
-import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration.repository";
+import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration-repository.ts";
 
 export async function handleConfigRoleSetTrial(
 	interaction: ChatInputCommandInteraction<CacheType>,

@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { loggerService } from "../services/logger.service.ts";
+import { loggerService } from "../services/logger-service.ts";
 import { GetEnvironmentVariablesLogs } from "./logs/get-environment-variables.logs.ts";
 
 export function getEnvironmentVariables() {

@@ -14,7 +14,6 @@ const DEV_OPTIONS: Partial<LoggerOptions> = {
 
 class LoggerService {
 	private static instance: LoggerService;
-	public initialised = false;
 	private logger: Logger = pino();
 	public debug: Logger["debug"] = console.debug;
 	public info: Logger["info"] = console.info;
@@ -39,8 +38,6 @@ class LoggerService {
 		this.info = this.logger.info.bind(this.logger);
 		this.error = this.logger.error.bind(this.logger);
 		this.warn = this.logger.warn.bind(this.logger);
-
-		this.initialised = true;
 	}
 
 	public static getInstance(): LoggerService {

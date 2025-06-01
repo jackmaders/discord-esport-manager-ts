@@ -31,4 +31,4 @@ describe("utils.ts", () => {
 });
 
 vi.mock("../exit-process.ts");
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");

@@ -7,7 +7,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/command-not-found-error.ts";
-import { handleAvailabilityQuery } from "../handlers/availability-query.handler.ts";
+import { handleAvailabilityQuery } from "../handlers/availability-query-handler.ts";
 
 export const availabilityCommand = {
 	data: new SlashCommandBuilder()

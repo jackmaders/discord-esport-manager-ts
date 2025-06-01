@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-describe("translation.service.ts", () => {
+describe("translation-service.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
 		vi.unstubAllEnvs();
@@ -8,7 +8,7 @@ describe("translation.service.ts", () => {
 
 	it("should export a TranslationService instance", async () => {
 		// Act
-		const { translationService } = await import("../translation.service.ts");
+		const { translationService } = await import("../translation-service.ts");
 
 		// Assert
 		expect(translationService).toBeDefined();
@@ -18,10 +18,10 @@ describe("translation.service.ts", () => {
 	it("should return the same instance when imported twice", async () => {
 		// Act
 		const { translationService: service1 } = await import(
-			"../translation.service.ts"
+			"../translation-service.ts"
 		);
 		const { translationService: service2 } = await import(
-			"../translation.service.ts"
+			"../translation-service.ts"
 		);
 
 		// Assert
@@ -32,7 +32,7 @@ describe("translation.service.ts", () => {
 		// Arrange
 		const { init } = await import("i18next");
 		const { getLocales } = await import("../../registries/get-locales.ts");
-		const { translationService } = await import("../translation.service.ts");
+		const { translationService } = await import("../translation-service.ts");
 
 		// Act
 		await translationService.initialise();

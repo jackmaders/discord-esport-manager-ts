@@ -39,7 +39,7 @@ describe("exit-process.ts", () => {
 
 	it("should log an error and destroy discord client if prisma errors", async () => {
 		// Arrange
-		const { loggerService } = await import("../../services/logger.service.ts");
+		const { loggerService } = await import("../../services/logger-service.ts");
 		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
 		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
@@ -60,7 +60,7 @@ describe("exit-process.ts", () => {
 
 	it("should log an error and disconnect prisma client if discord errors", async () => {
 		// Arrange
-		const { loggerService } = await import("../../services/logger.service.ts");
+		const { loggerService } = await import("../../services/logger-service.ts");
 		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
 		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
@@ -82,4 +82,4 @@ describe("exit-process.ts", () => {
 
 vi.mock("../../../shared/clients/prisma.ts");
 vi.mock("../../clients/discord-client.ts");
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");

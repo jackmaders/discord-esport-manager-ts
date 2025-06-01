@@ -149,4 +149,4 @@ describe("get-environment-variables.ts", () => {
 	});
 });
 
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");

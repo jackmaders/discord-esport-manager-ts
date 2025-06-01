@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { loggerService } from "../../services/logger.service.ts";
+import { loggerService } from "../../services/logger-service.ts";
 import { DiscordClientLogs } from "../logs/discord-client.logs.ts";
 
 describe("discord-client.ts", () => {
@@ -18,4 +18,4 @@ describe("discord-client.ts", () => {
 });
 
 vi.mock("discord.js");
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");

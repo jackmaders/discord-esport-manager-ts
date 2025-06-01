@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-describe("scheduler.service.ts", () => {
+describe("scheduler-service.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
 		vi.unstubAllEnvs();
@@ -9,7 +9,7 @@ describe("scheduler.service.ts", () => {
 
 	it("should export a SchedulerService instance", async () => {
 		// Act
-		const { schedulerService } = await import("../scheduler.service.ts");
+		const { schedulerService } = await import("../scheduler-service.ts");
 
 		// Assert
 		expect(schedulerService).toBeDefined();
@@ -19,10 +19,10 @@ describe("scheduler.service.ts", () => {
 	it("should return the same instance when imported twice", async () => {
 		// Act
 		const { schedulerService: service1 } = await import(
-			"../scheduler.service.ts"
+			"../scheduler-service.ts"
 		);
 		const { schedulerService: service2 } = await import(
-			"../scheduler.service.ts"
+			"../scheduler-service.ts"
 		);
 
 		// Assert
@@ -35,7 +35,7 @@ describe("scheduler.service.ts", () => {
 		// Arrange
 		vi.useFakeTimers();
 		const { getSchedules } = await import("../../registries/get-schedules.ts");
-		const { schedulerService } = await import("../scheduler.service.ts");
+		const { schedulerService } = await import("../scheduler-service.ts");
 
 		// Act
 		await schedulerService.initialise();

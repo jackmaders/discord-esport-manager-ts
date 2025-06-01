@@ -23,7 +23,7 @@ describe("schedules.ts", () => {
 	});
 });
 
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");
 vi.mock(
 	"../../../modules/availability/schedules/availability-poll-schedule.ts",
 );

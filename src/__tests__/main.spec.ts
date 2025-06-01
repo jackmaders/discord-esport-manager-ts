@@ -2,10 +2,10 @@ import { type ClientUser, Events } from "discord.js";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { discordClient } from "../core/clients/discord-client.ts";
 import { LogMessages } from "../core/constants/log-messages.ts";
-import { commandService } from "../core/services/command.service.ts";
-import { loggerService } from "../core/services/logger.service.ts";
-import { schedulerService } from "../core/services/scheduler.service.ts";
-import { translationService } from "../core/services/translation.service.ts";
+import { commandService } from "../core/services/command-service.ts";
+import { loggerService } from "../core/services/logger-service.ts";
+import { schedulerService } from "../core/services/scheduler-service.ts";
+import { translationService } from "../core/services/translation-service.ts";
 import { exitProcess } from "../core/utils/exit-process.ts";
 import { main } from "../main.ts";
 
@@ -125,14 +125,14 @@ describe("main.ts", () => {
 		await main();
 
 		// Assert
-		expect(console.error).toHaveBeenCalledWith(error);
+		expect(loggerService.error).toHaveBeenCalledWith(error);
 		expect(exitProcess).toHaveBeenCalledWith(1);
 	});
 });
 
-vi.mock("../core/services/command.service.ts");
-vi.mock("../core/services/logger.service.ts");
-vi.mock("../core/services/scheduler.service.ts");
-vi.mock("../core/services/translation.service.ts");
+vi.mock("../core/services/command-service.ts");
+vi.mock("../core/services/logger-service.ts");
+vi.mock("../core/services/scheduler-service.ts");
+vi.mock("../core/services/translation-service.ts");
 vi.mock("../core/clients/discord-client.ts");
 vi.mock("../core/utils/exit-process.ts");

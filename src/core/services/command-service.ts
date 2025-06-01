@@ -6,7 +6,7 @@ import {
 	type SlashCommand,
 	getSlashCommands,
 } from "../registries/get-slash-commands.ts";
-import { loggerService } from "./logger.service.ts";
+import { loggerService } from "./logger-service.ts";
 
 class CommandsService {
 	private static instance: CommandsService;

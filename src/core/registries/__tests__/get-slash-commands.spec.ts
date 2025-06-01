@@ -25,6 +25,6 @@ describe("commands.ts", () => {
 	});
 });
 
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");
 vi.mock("../../../modules/availability/commands/availability-command.ts");
 vi.mock("../../../modules/config/commands/config-command.ts");

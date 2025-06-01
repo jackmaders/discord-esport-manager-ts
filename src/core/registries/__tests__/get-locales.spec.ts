@@ -19,4 +19,4 @@ describe("locales.ts", () => {
 	});
 });
 
-vi.mock("../../services/logger.service.ts");
+vi.mock("../../services/logger-service.ts");

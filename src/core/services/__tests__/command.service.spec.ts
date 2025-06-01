@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LogMessages } from "../../constants/log-messages.ts";
 
-describe("command.service.ts", () => {
+describe("command-service.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
 		vi.unstubAllEnvs();
@@ -9,7 +9,7 @@ describe("command.service.ts", () => {
 
 	it("should export a CommandService instance", async () => {
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 
 		// Assert
 		expect(commandService).toBeDefined();
@@ -18,9 +18,9 @@ describe("command.service.ts", () => {
 
 	it("should return the same instance when imported twice", async () => {
 		// Act
-		const commandService1 = (await import("../command.service.ts"))
+		const commandService1 = (await import("../command-service.ts"))
 			.commandService;
-		const commandService2 = (await import("../command.service.ts"))
+		const commandService2 = (await import("../command-service.ts"))
 			.commandService;
 
 		// Assert
@@ -32,7 +32,7 @@ describe("command.service.ts", () => {
 		const { REST } = await import("discord.js");
 
 		// Act
-		await import("../command.service.ts");
+		await import("../command-service.ts");
 
 		// Assert
 		expect(REST).toHaveBeenCalledWith({ version: "10" });
@@ -40,14 +40,14 @@ describe("command.service.ts", () => {
 
 	it("should return a warning if no modules are loaded", async () => {
 		// Arrange
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 		const { getSlashCommands: getCommands } = await import(
 			"../../registries/get-slash-commands.ts"
 		);
 		vi.mocked(getCommands).mockReturnValue([]);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -58,13 +58,13 @@ describe("command.service.ts", () => {
 
 	it("should load modules on initialisation", async () => {
 		// Arrange
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 		const { getSlashCommands: getCommands } = await import(
 			"../../registries/get-slash-commands.ts"
 		);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -80,7 +80,7 @@ describe("command.service.ts", () => {
 
 	it("should return a warning if duplicate modules are loaded", async () => {
 		// Arrange
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 		const { getSlashCommands } = await import(
 			"../../registries/get-slash-commands.ts"
 		);
@@ -90,7 +90,7 @@ describe("command.service.ts", () => {
 		]);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -102,10 +102,10 @@ describe("command.service.ts", () => {
 
 	it("should register commands on initialisation", async () => {
 		// Arrange
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -121,10 +121,10 @@ describe("command.service.ts", () => {
 	it("should skip command registration if SKIP_COMMAND_REGISTRATION is true", async () => {
 		// Arrange
 		vi.stubEnv("SKIP_COMMAND_REGISTRATION", "true");
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -145,10 +145,10 @@ describe("command.service.ts", () => {
 			setToken: vi.fn().mockReturnThis(),
 			put: vi.fn().mockRejectedValue(error),
 		} as never);
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 
 		// Assert
@@ -165,7 +165,7 @@ describe("command.service.ts", () => {
 		);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 		commandService.handleInteraction({
 			commandName: getCommands()[0].data.name,
@@ -183,7 +183,7 @@ describe("command.service.ts", () => {
 		);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 		const result = await commandService.handleInteraction({
 			commandName: getCommands()[0].data.name,
@@ -202,7 +202,7 @@ describe("command.service.ts", () => {
 		);
 
 		// Act
-		const { commandService } = await import("../command.service.ts");
+		const { commandService } = await import("../command-service.ts");
 		await commandService.initialise();
 		const promise = commandService.handleInteraction({
 			commandName: "asdf",
@@ -216,6 +216,6 @@ describe("command.service.ts", () => {
 });
 
 vi.mock("discord.js");
-vi.mock("../logger.service.ts");
+vi.mock("../logger-service.ts");
 vi.mock("../../registries/get-slash-commands.ts");
 vi.mock("../../config/get-environment-variables.ts");

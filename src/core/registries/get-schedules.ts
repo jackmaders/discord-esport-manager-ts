@@ -1,5 +1,5 @@
 import { availabilityPollSchedule } from "../../modules/availability/schedules/availability-poll-schedule.ts";
-import { loggerService } from "../services/logger.service.ts";
+import { loggerService } from "../services/logger-service.ts";
 import { GetSchedulesLogs } from "./logs/get-schedules.logs.ts";
 
 export interface Schedule {

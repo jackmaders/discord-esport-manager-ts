@@ -1,3 +1,3 @@
 export enum GetSlashCommandsLogs {
-	Start = "Retrieving Slash",
+	Start = "Retrieving Slash Commands.",
 }

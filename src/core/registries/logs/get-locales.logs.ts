@@ -1,3 +1,3 @@
 export enum GetLocalesLogs {
-	Start = "Retrieving Locales Commands",
+	Start = "Retrieving Locales.",
 }

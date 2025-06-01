@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-describe("logger.service.ts", () => {
+describe("logger-service.ts", () => {
 	afterEach(() => {
 		vi.resetModules();
 		vi.unstubAllEnvs();
@@ -8,7 +8,7 @@ describe("logger.service.ts", () => {
 
 	it("should export a LoggerService instance", async () => {
 		// Act
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Assert
 		expect(loggerService).toBeDefined();
@@ -17,8 +17,8 @@ describe("logger.service.ts", () => {
 
 	it("should return the same instance when imported twice", async () => {
 		// Act
-		const { loggerService: service1 } = await import("../logger.service.ts");
-		const { loggerService: service2 } = await import("../logger.service.ts");
+		const { loggerService: service1 } = await import("../logger-service.ts");
+		const { loggerService: service2 } = await import("../logger-service.ts");
 
 		// Assert
 		expect(service1).toBe(service2);
@@ -30,7 +30,7 @@ describe("logger.service.ts", () => {
 		vi.spyOn(console, "info").mockImplementation(vi.fn());
 		vi.spyOn(console, "warn").mockImplementation(vi.fn());
 		vi.spyOn(console, "error").mockImplementation(vi.fn());
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
 		loggerService.debug("debug");
@@ -49,7 +49,7 @@ describe("logger.service.ts", () => {
 		// Arrange
 		vi.stubEnv("NODE_ENV", "production");
 		const pino = (await import("pino")).default;
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
 		loggerService.initialise();
@@ -73,7 +73,7 @@ describe("logger.service.ts", () => {
 		// Arrange
 		vi.stubEnv("NODE_ENV", "development");
 		const pino = (await import("pino")).default;
-		const { loggerService } = await import("../logger.service.ts");
+		const { loggerService } = await import("../logger-service.ts");
 
 		// Act
 		loggerService.initialise();
