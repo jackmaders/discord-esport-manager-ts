@@ -1,6 +1,10 @@
 import { z } from "zod/v4";
+import { loggerService } from "../services/logger.service.ts";
+import { GetEnvironmentVariablesLogs } from "./logs/get-environment-variables.logs.ts";
 
 export function getEnvironmentVariables() {
+	loggerService.debug(GetEnvironmentVariablesLogs.Start);
+
 	const schema = z.object({
 		// biome-ignore lint/style/useNamingConvention: environment variables
 		DISCORD_BOT_TOKEN: z.string(),

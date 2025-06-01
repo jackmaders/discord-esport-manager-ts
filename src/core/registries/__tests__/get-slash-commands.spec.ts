@@ -6,12 +6,16 @@ describe("commands.ts", () => {
 	});
 
 	it("should export an array of commands", async () => {
-		const { getCommands } = await import("../get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../get-slash-commands.ts"
+		);
 		expect(getCommands()).toBeInstanceOf(Array);
 	});
 
 	it("should export commands with data and execute properties", async () => {
-		const { getCommands } = await import("../get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../get-slash-commands.ts"
+		);
 		for (const command of getCommands()) {
 			expect(command).toHaveProperty("data");
 			expect(typeof command.data).toBe("object");
@@ -20,3 +24,7 @@ describe("commands.ts", () => {
 		}
 	});
 });
+
+vi.mock("../../services/logger.service.ts");
+vi.mock("../../../modules/availability/commands/availability-command.ts");
+vi.mock("../../../modules/config/commands/config-command.ts");

@@ -17,4 +17,4 @@ const commands = [
 	},
 ];
 
-export const getCommands = vi.fn(() => commands);
+export const getSlashCommands = vi.fn(() => commands);

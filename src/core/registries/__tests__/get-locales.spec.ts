@@ -18,3 +18,5 @@ describe("locales.ts", () => {
 		expect(getLocales().en).toHaveProperty("config");
 	});
 });
+
+vi.mock("../../services/logger.service.ts");

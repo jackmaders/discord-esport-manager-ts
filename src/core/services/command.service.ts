@@ -2,7 +2,10 @@ import { type CacheType, type Interaction, REST, Routes } from "discord.js";
 import { CommandNotFoundError } from "../../shared/errors/command-not-found-error.ts";
 import { getEnvironmentVariables } from "../config/get-environment-variables.ts";
 import { LogMessages } from "../constants/log-messages.ts";
-import { type SlashCommand, getCommands } from "../registries/get-commands.ts";
+import {
+	type SlashCommand,
+	getSlashCommands,
+} from "../registries/get-slash-commands.ts";
 import { loggerService } from "./logger.service.ts";
 
 class CommandsService {
@@ -37,7 +40,7 @@ class CommandsService {
 		loggerService.debug(LogMessages.DebugLoadModulesStart);
 		this.commands.clear();
 
-		for (const command of getCommands()) {
+		for (const command of getSlashCommands()) {
 			if (this.commands.has(command.data.name)) {
 				loggerService.warn(
 					LogMessages.WarnCommandAlreadyRegistered,

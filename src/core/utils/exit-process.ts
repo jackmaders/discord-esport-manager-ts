@@ -1,5 +1,5 @@
 import { prismaClient } from "../../shared/clients/prisma.ts";
-import { discordClient } from "../clients/discord.client.ts";
+import { discordClient } from "../clients/discord-client.ts";
 import { loggerService } from "../services/logger.service.ts";
 
 let isExiting = false;

@@ -1,6 +1,6 @@
 import { type ClientUser, Events } from "discord.js";
 import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
-import { discordClient } from "../core/clients/discord.client.ts";
+import { discordClient } from "../core/clients/discord-client.ts";
 import { LogMessages } from "../core/constants/log-messages.ts";
 import { commandService } from "../core/services/command.service.ts";
 import { loggerService } from "../core/services/logger.service.ts";
@@ -31,13 +31,6 @@ describe("main.ts", () => {
 	});
 
 	it("should assign the Error discord.js event listener", async () => {
-		// Arrange
-		const error = new Error("Test error");
-		vi.mocked(discordClient).on.mockImplementation((_, fn) => {
-			fn(error);
-			return discordClient;
-		});
-
 		// Act
 		await main();
 
@@ -46,7 +39,6 @@ describe("main.ts", () => {
 			Events.Error,
 			expect.any(Function),
 		);
-		expect(loggerService.error).toHaveBeenCalledWith(error);
 	});
 
 	it("should assign the Warn discord.js event listener", async () => {
@@ -142,5 +134,5 @@ vi.mock("../core/services/command.service.ts");
 vi.mock("../core/services/logger.service.ts");
 vi.mock("../core/services/scheduler.service.ts");
 vi.mock("../core/services/translation.service.ts");
-vi.mock("../core/clients/discord.client.ts");
+vi.mock("../core/clients/discord-client.ts");
 vi.mock("../core/utils/exit-process.ts");

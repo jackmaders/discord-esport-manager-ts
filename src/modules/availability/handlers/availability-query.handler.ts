@@ -4,7 +4,7 @@ import {
 	MessageFlags,
 } from "discord.js";
 import { t } from "i18next";
-import { discordClient } from "../../../core/clients/discord.client.ts";
+import { discordClient } from "../../../core/clients/discord-client.ts";
 import { GuildOnlyError } from "../../../shared/errors/guild-only-error.ts";
 import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration.repository";
 import { sendAvailabilityPoll } from "../ui/availability-poll.ui";

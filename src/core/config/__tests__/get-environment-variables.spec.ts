@@ -148,3 +148,5 @@ describe("get-environment-variables.ts", () => {
 		expect(getEnvironmentVariables).toThrowError("Invalid URL");
 	});
 });
+
+vi.mock("../../services/logger.service.ts");

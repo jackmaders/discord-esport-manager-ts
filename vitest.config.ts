@@ -18,7 +18,7 @@ const config = defineConfig({
 			SKIP_COMMAND_REGISTRATION: "false",
 		},
 		coverage: {
-			exclude: ["prisma/generated", "*.config.ts"],
+			exclude: ["prisma/generated", "*.config.ts", "dist"],
 		},
 	},
 });

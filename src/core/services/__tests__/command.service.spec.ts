@@ -41,7 +41,9 @@ describe("command.service.ts", () => {
 	it("should return a warning if no modules are loaded", async () => {
 		// Arrange
 		const { loggerService } = await import("../logger.service.ts");
-		const { getCommands } = await import("../../registries/get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
 		vi.mocked(getCommands).mockReturnValue([]);
 
 		// Act
@@ -57,7 +59,9 @@ describe("command.service.ts", () => {
 	it("should load modules on initialisation", async () => {
 		// Arrange
 		const { loggerService } = await import("../logger.service.ts");
-		const { getCommands } = await import("../../registries/get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
 
 		// Act
 		const { commandService } = await import("../command.service.ts");
@@ -77,10 +81,12 @@ describe("command.service.ts", () => {
 	it("should return a warning if duplicate modules are loaded", async () => {
 		// Arrange
 		const { loggerService } = await import("../logger.service.ts");
-		const { getCommands } = await import("../../registries/get-commands.ts");
-		vi.mocked(getCommands).mockReturnValue([
-			getCommands()[0],
-			getCommands()[0],
+		const { getSlashCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
+		vi.mocked(getSlashCommands).mockReturnValue([
+			getSlashCommands()[0],
+			getSlashCommands()[0],
 		]);
 
 		// Act
@@ -90,7 +96,7 @@ describe("command.service.ts", () => {
 		// Assert
 		expect(loggerService.warn).toHaveBeenCalledWith(
 			LogMessages.WarnCommandAlreadyRegistered,
-			getCommands()[0].data.name,
+			getSlashCommands()[0].data.name,
 		);
 	});
 
@@ -154,7 +160,9 @@ describe("command.service.ts", () => {
 
 	it("should handle an valid interaction", async () => {
 		// Arrange
-		const { getCommands } = await import("../../registries/get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
 
 		// Act
 		const { commandService } = await import("../command.service.ts");
@@ -170,7 +178,9 @@ describe("command.service.ts", () => {
 
 	it("should handle an non chat-input interaction", async () => {
 		// Arrange
-		const { getCommands } = await import("../../registries/get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
 
 		// Act
 		const { commandService } = await import("../command.service.ts");
@@ -187,7 +197,9 @@ describe("command.service.ts", () => {
 
 	it("should handle an interaction with an unknown name", async () => {
 		// Arrange
-		const { getCommands } = await import("../../registries/get-commands.ts");
+		const { getSlashCommands: getCommands } = await import(
+			"../../registries/get-slash-commands.ts"
+		);
 
 		// Act
 		const { commandService } = await import("../command.service.ts");
@@ -205,4 +217,5 @@ describe("command.service.ts", () => {
 
 vi.mock("discord.js");
 vi.mock("../logger.service.ts");
-vi.mock("../../registries/get-commands.ts");
+vi.mock("../../registries/get-slash-commands.ts");
+vi.mock("../../config/get-environment-variables.ts");

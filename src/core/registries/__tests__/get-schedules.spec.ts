@@ -5,7 +5,7 @@ describe("schedules.ts", () => {
 		vi.resetModules();
 	});
 
-	it("should export an array of commands", async () => {
+	it("should export an array of schedules", async () => {
 		const { getSchedules } = await import("../get-schedules.ts");
 		expect(getSchedules()).toBeInstanceOf(Array);
 	});
@@ -22,3 +22,8 @@ describe("schedules.ts", () => {
 		}
 	});
 });
+
+vi.mock("../../services/logger.service.ts");
+vi.mock(
+	"../../../modules/availability/schedules/availability-poll-schedule.ts",
+);

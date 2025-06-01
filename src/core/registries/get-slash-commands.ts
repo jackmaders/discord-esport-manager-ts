@@ -5,8 +5,10 @@ import type {
 	SlashCommandSubcommandGroupBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { availabilityCommand } from "../../modules/availability/commands/availability.command";
-import { configCommand } from "../../modules/config/commands/config.command";
+import { availabilityCommand } from "../../modules/availability/commands/availability-command.ts";
+import { configCommand } from "../../modules/config/commands/config-command.ts";
+import { loggerService } from "../services/logger.service.ts";
+import { GetSlashCommandsLogs } from "./logs/get-slash-commands.logs.ts";
 
 export interface SlashCommand {
 	data:
@@ -21,6 +23,7 @@ export interface SlashCommand {
 
 const commands = [availabilityCommand, configCommand];
 
-export function getCommands(): SlashCommand[] {
+export function getSlashCommands(): SlashCommand[] {
+	loggerService.debug(GetSlashCommandsLogs.Start);
 	return commands;
 }

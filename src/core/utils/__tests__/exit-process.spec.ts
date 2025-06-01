@@ -10,7 +10,7 @@ describe("exit-process.ts", () => {
 	it("should disconnect from the clients", async () => {
 		// Arrange
 		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
-		const { discordClient } = await import("../../clients/discord.client.ts");
+		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 
 		// Act
@@ -41,7 +41,7 @@ describe("exit-process.ts", () => {
 		// Arrange
 		const { loggerService } = await import("../../services/logger.service.ts");
 		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
-		const { discordClient } = await import("../../clients/discord.client.ts");
+		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 		const error = new Error("Prisma disconnect error");
 		vi.mocked(prismaClient).$disconnect.mockRejectedValue(error);
@@ -62,7 +62,7 @@ describe("exit-process.ts", () => {
 		// Arrange
 		const { loggerService } = await import("../../services/logger.service.ts");
 		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
-		const { discordClient } = await import("../../clients/discord.client.ts");
+		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 		const error = new Error("Discord disconnect error");
 		vi.mocked(discordClient).destroy.mockRejectedValue(error);
@@ -81,5 +81,5 @@ describe("exit-process.ts", () => {
 });
 
 vi.mock("../../../shared/clients/prisma.ts");
-vi.mock("../../clients/discord.client.ts");
+vi.mock("../../clients/discord-client.ts");
 vi.mock("../../services/logger.service.ts");

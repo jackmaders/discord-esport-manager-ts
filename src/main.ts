@@ -1,5 +1,5 @@
 import { Events } from "discord.js";
-import { discordClient } from "./core/clients/discord.client";
+import { discordClient } from "./core/clients/discord-client.ts";
 import { getEnvironmentVariables } from "./core/config/get-environment-variables.ts";
 import { LogMessages } from "./core/constants/log-messages.ts";
 import { commandService } from "./core/services/command.service";

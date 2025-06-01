@@ -8,9 +8,9 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/command-not-found-error.ts";
-import { handleConfigChannelSetAvailability } from "../handlers/config-channel-set-availability.handler";
-import { handleConfigRoleSetTeamMember } from "../handlers/config-role-set-team-member.handler";
-import { handleConfigRoleSetTrial } from "../handlers/config-role-set-trial.handler";
+import { handleConfigChannelSetAvailability } from "../handlers/config-channel-set-availability.handler.ts";
+import { handleConfigRoleSetTeamMember } from "../handlers/config-role-set-team-member.handler.ts";
+import { handleConfigRoleSetTrial } from "../handlers/config-role-set-trial.handler.ts";
 
 export const configCommand = {
 	data: new SlashCommandBuilder()
