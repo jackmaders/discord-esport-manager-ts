@@ -9,7 +9,9 @@ describe("exit-process.ts", () => {
 
 	it("should disconnect from the clients", async () => {
 		// Arrange
-		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
+		const { prismaClient } = await import(
+			"../../../shared/clients/prisma-client.ts"
+		);
 		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 
@@ -40,7 +42,9 @@ describe("exit-process.ts", () => {
 	it("should log an error and destroy discord client if prisma errors", async () => {
 		// Arrange
 		const { loggerService } = await import("../../services/logger-service.ts");
-		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
+		const { prismaClient } = await import(
+			"../../../shared/clients/prisma-client.ts"
+		);
 		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 		const error = new Error("Prisma disconnect error");
@@ -61,7 +65,9 @@ describe("exit-process.ts", () => {
 	it("should log an error and disconnect prisma client if discord errors", async () => {
 		// Arrange
 		const { loggerService } = await import("../../services/logger-service.ts");
-		const { prismaClient } = await import("../../../shared/clients/prisma.ts");
+		const { prismaClient } = await import(
+			"../../../shared/clients/prisma-client.ts"
+		);
 		const { discordClient } = await import("../../clients/discord-client.ts");
 		const { exitProcess } = await import("../exit-process.ts");
 		const error = new Error("Discord disconnect error");

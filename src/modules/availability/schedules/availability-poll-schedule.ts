@@ -1,5 +1,5 @@
 import { discordClient } from "../../../core/clients/discord-client.ts";
-import { prismaClient } from "../../../shared/clients/prisma.ts";
+import { prismaClient } from "../../../shared/clients/prisma-client.ts";
 import { sendAvailabilityPoll } from "../ui/availability-poll.ts";
 
 export const availabilityPollSchedule = {

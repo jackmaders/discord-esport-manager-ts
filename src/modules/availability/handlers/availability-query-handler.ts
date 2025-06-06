@@ -4,9 +4,9 @@ import {
 	MessageFlags,
 } from "discord.js";
 import { t } from "i18next";
-import { discordClient } from "../../../core/clients/discord-client.ts";
 import { GuildOnlyError } from "../../../shared/errors/guild-only-error.ts";
-import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration-repository.ts";
+import { discordService } from "../../../shared/services/discord-service.ts";
+import { guildConfigService } from "../../../shared/services/guild-config-service.ts";
 import { sendAvailabilityPoll } from "../ui/availability-poll.ts";
 
 export async function handleAvailabilityQuery(
@@ -16,17 +16,13 @@ export async function handleAvailabilityQuery(
 		throw new GuildOnlyError(interaction.commandName);
 	}
 
-	const channelId = await guildConfigurationRepository.getAvailabilityChannelId(
+	const channelId = await guildConfigService.getAvailabilityChannelId(
 		interaction.guildId,
 	);
 
 	const channel = channelId
-		? await discordClient.channels.fetch(channelId)
+		? await discordService.fetchTextChannel(channelId)
 		: interaction.channel;
-
-	if (!channel?.isTextBased()) {
-		return;
-	}
 
 	await sendAvailabilityPoll(channel, interaction.guildId);
 

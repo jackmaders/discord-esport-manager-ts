@@ -1,6 +1,6 @@
 import type { TextBasedChannel } from "discord.js";
 import { t } from "i18next";
-import { guildConfigurationRepository } from "../../../shared/repositories/guild-configuration-repository.ts";
+import { guildConfigurationRepository } from "../../../shared/repositories/guild-config-repository.ts";
 import { getNextMonday } from "../utils/get-next-monday.ts";
 
 export async function sendAvailabilityPoll(

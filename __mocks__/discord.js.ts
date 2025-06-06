@@ -9,6 +9,20 @@ export const REST = vi.fn(() => ({
 	delete: vi.fn(),
 }));
 
+export const SlashCommandBuilder = vi.fn(() => ({
+	setName: vi.fn().mockReturnThis(),
+	setDescription: vi.fn().mockReturnThis(),
+	setDefaultMemberPermissions: vi.fn().mockReturnThis(),
+	setIntegrationTypes: vi.fn().mockReturnThis(),
+	setContexts: vi.fn().mockReturnThis(),
+	addSubcommand: vi.fn().mockReturnThis(),
+}));
+
+export const SlashCommandSubcommandBuilder = vi.fn(() => ({
+	setName: vi.fn().mockReturnThis(),
+	setDescription: vi.fn().mockReturnThis(),
+}));
+
 export const Routes = {
 	applicationCommands: vi.fn(),
 };
@@ -39,4 +53,22 @@ export enum GatewayIntentBits {
 	AutoModerationExecution = 2097152,
 	GuildMessagePolls = 16777216,
 	DirectMessagePolls = 33554432,
+}
+
+export enum ApplicationIntegrationType {
+	GuildInstall = 0,
+	UserInstall = 1,
+}
+
+export enum PermissionFlagsBits {
+	CreateInstantInvite = "CreateInstantInvite",
+	KickMembers = "KickMembers",
+	BanMembers = "BanMembers",
+}
+
+export enum InteractionContextType {
+	Guild = 0,
+	// biome-ignore lint/style/useNamingConvention: mocking discord.js
+	BotDM = 1,
+	PrivateChannel = 2,
 }

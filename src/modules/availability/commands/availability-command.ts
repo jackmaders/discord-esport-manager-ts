@@ -5,6 +5,7 @@ import {
 	InteractionContextType,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
+	SlashCommandSubcommandBuilder,
 } from "discord.js";
 import { CommandNotFoundError } from "../../../shared/errors/command-not-found-error.ts";
 import { handleAvailabilityQuery } from "../handlers/availability-query-handler.ts";
@@ -16,8 +17,8 @@ export const availabilityCommand = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
 		.setIntegrationTypes([ApplicationIntegrationType.GuildInstall])
 		.setContexts([InteractionContextType.Guild])
-		.addSubcommand((subcommand) =>
-			subcommand
+		.addSubcommand(
+			new SlashCommandSubcommandBuilder()
 				.setName("query")
 				.setDescription("Submit a poll to check the availability of the team"),
 		),
