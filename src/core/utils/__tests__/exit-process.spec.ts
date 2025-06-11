@@ -86,6 +86,6 @@ describe("exit-process.ts", () => {
 	});
 });
 
-vi.mock("../../../shared/clients/prisma.ts");
+vi.mock("../../../shared/clients/prisma-client.ts");
 vi.mock("../../clients/discord-client.ts");
 vi.mock("../../services/logger-service.ts");

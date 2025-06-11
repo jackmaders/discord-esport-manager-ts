@@ -1,6 +1,6 @@
 import type { TextBasedChannel } from "discord.js";
 import { t } from "i18next";
-import { guildConfigurationRepository } from "../../../shared/repositories/guild-config-repository.ts";
+import { guildConfigRepository } from "../../../shared/repositories/guild-config-repository.ts";
 import { getNextMonday } from "../utils/get-next-monday.ts";
 
 export async function sendAvailabilityPoll(
@@ -13,8 +13,7 @@ export async function sendAvailabilityPoll(
 
 	const nextMonday = getNextMonday();
 
-	const config =
-		await guildConfigurationRepository.getGuildConfiguration(guildId);
+	const config = await guildConfigRepository.get(guildId);
 
 	const teamMemberRoleId = config?.teamMemberRoleId;
 	const trialRoleId = config?.trialRoleId;
